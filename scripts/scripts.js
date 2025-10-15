@@ -80,11 +80,11 @@ export function decorateMain(main) {
   // for now we are using custom nav not this header fragment, hence removing for a while
   document.querySelectorAll('header').forEach(el => el.remove());
   // hopefully forward compatible button decoration
-//  decorateButtons(main);
-//  decorateIcons(main);
-//  buildAutoBlocks(main);
-//  decorateSections(main);
-//  decorateBlocks(main);
+  decorateButtons(main);
+  decorateIcons(main);
+  buildAutoBlocks(main);
+  decorateSections(main);
+  decorateBlocks(main);
 }
 
 /**
@@ -140,25 +140,8 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
-async function loadCustomBlocks(main) {
-  const blocks = main.querySelectorAll('.block');
-  for (const block of blocks) {
-    const name = block.dataset.blockName;
-    if (!name) continue;
-    try {
-      const mod = await import(`/blocks/${name}/${name}.js`);
-      if (typeof mod.default === 'function') {
-        mod.default(block); // <-- your code runs untouched
-      }
-    } catch (e) {
-      console.error('Error in block:', name, e);
-    }
-  }
-}
-
 async function loadPage() {
   await loadEager(document);
-  await loadCustomBlocks(main);
   await loadLazy(document);
   loadDelayed();
 }
