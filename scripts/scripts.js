@@ -77,6 +77,8 @@ function buildAutoBlocks() {
  */
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
+  // for now we are using custom nav not this header fragment, hence removing for a while
+  document.querySelectorAll('header').forEach(el => el.remove());
   // hopefully forward compatible button decoration
   decorateButtons(main);
   decorateIcons(main);
