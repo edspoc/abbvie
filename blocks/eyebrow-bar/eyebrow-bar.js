@@ -1,34 +1,50 @@
-// Eyebrow bar: renders a small top strip with a richtext message.
-// Strict EDS: keep UE-authored nodes, provide a clear binding target.
-
+// /blocks/eyebrow-bar/eyebrow-bar.js
 export default function decorate(block) {
-  // Wrap without destroying UE placeholders
-  const wrap = document.createElement('div');
-  wrap.className = 'eyebrow-bar';
-  wrap.setAttribute('role', 'region');
-  wrap.setAttribute('aria-label', 'Site notice');
+  // 1) Ensure a single root wrapper
+  let root = block.querySelector(':scope > .eyebrow-bar');
+  if (!root) {
+    root = document.createElement('div');
+    root.className = 'eyebrow-bar';
+    root.setAttribute('role', 'region');
+    root.setAttribute('aria-label', 'Site notice');
+    while (block.firstChild) root.append(block.firstChild);
+    block.append(root);
+  }
 
-  // Move existing children (if any) into wrapper
-  while (block.firstChild) wrap.appendChild(block.firstChild);
-  block.appendChild(wrap);
+  // 2) Ensure inner container
+  let inner = root.querySelector(':scope > .eyebrow-bar__inner');
+  if (!inner) {
+    inner = document.createElement('div');
+    inner.className = 'eyebrow-bar__inner';
+    root.append(inner);
+  }
 
-  // Find or create the message target
-  let msg = wrap.querySelector('[data-aue-prop="message"]');
+  // 3) Find or create the message element
+  let msg =
+    inner.querySelector(':scope > .eyebrow-bar__message') ||
+    root.querySelector(':scope > [data-aue-prop="message"]');
+
   if (!msg) {
     msg = document.createElement('div');
-    msg.setAttribute('data-aue-prop', 'message');     // must match model field "name"
-    msg.setAttribute('data-aue-type', 'richtext');    // richtext authoring
+    msg.setAttribute('data-aue-prop', 'message');
+    msg.setAttribute('data-aue-type', 'richtext');
     msg.setAttribute('data-aue-label', 'Eyebrow Message');
-    wrap.appendChild(msg);
   }
   msg.classList.add('eyebrow-bar__message');
+  if (msg.parentElement !== inner) inner.append(msg);
 
-  // Optional container for max-width layouts
-  if (!wrap.querySelector('.eyebrow-bar__inner')) {
-    const inner = document.createElement('div');
-    inner.className = 'eyebrow-bar__inner';
-    // move message into inner
-    inner.appendChild(msg);
-    wrap.appendChild(inner);
-  }
+  // 4) MOVE authored content into message (don’t duplicate)
+  // Anything in root that is not the inner container is considered authored holder(s)
+  [...root.children].forEach((child) => {
+    if (child !== inner) {
+      while (child.firstChild) msg.append(child.firstChild);
+      child.remove();
+    }
+  });
+
+  // 5) Optional: tidy links
+  msg.querySelectorAll('a[href^="http"]').forEach((a) => {
+    a.target = '_blank';
+    a.rel = 'noopener';
+  });
 }
