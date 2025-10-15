@@ -555,11 +555,13 @@ async function loadBlock(block) {
     block.dataset.blockStatus = 'loading';
     const { blockName } = block.dataset;
     try {
-      const cssLoaded = loadCSS(`/blocks/${blockName}/${blockName}.css`);
+      const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
       const decorationComplete = new Promise((resolve) => {
         (async () => {
           try {
-            const mod = await import(`/blocks/${blockName}/${blockName}.js`);
+            const mod = await import(
+              `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`
+            );
             if (mod.default) {
               await mod.default(block);
             }
@@ -576,7 +578,6 @@ async function loadBlock(block) {
       console.log(`failed to load block ${blockName}`, error);
     }
     block.dataset.blockStatus = 'loaded';
-    block.classList.add('is-decorated');
   }
   return block;
 }
@@ -586,7 +587,7 @@ async function loadBlock(block) {
  * @param {Element} block The block element
  */
 function decorateBlock(block) {
-  const shortBlockName =block.dataset.blockName || [...block.classList].find((c) => c !== 'block' && c !== 'section' && !c.endsWith('-wrapper'));
+  const shortBlockName = block.classList[0];
   if (shortBlockName && !block.dataset.blockStatus) {
     block.classList.add('block');
     block.dataset.blockName = shortBlockName;
