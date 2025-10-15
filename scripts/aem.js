@@ -557,6 +557,7 @@ async function loadBlock(block) {
     try {
     console.log(`path: ${window.hlx.codeBasePath}, name: ${blockName}`);
       const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
+      console.log(`css path: ${cssLoaded}`);
       const decorationComplete = new Promise((resolve) => {
         (async () => {
           try {
