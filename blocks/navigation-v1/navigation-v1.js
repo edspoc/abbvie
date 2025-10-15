@@ -2,40 +2,54 @@
 
 function toArray(nl) { return Array.prototype.slice.call(nl || []); }
 
-function pickCanonicalContent(block) {
-  // Find all menuHtml nodes
-  const all = toArray(block.querySelectorAll('[data-aue-prop="menuHtml"]'));
-
-  // Use the one with our canonical class if present, else create it.
-  let canonical = all.find((n) => n.classList.contains('navigation-v1__content'));
+function pickCanonicalContent(root) {
+  // 1) ensure we have exactly one canonical content element
+  let canonical = root.querySelector(':scope > .navigation-v1__content');
   if (!canonical) {
     canonical = document.createElement('div');
     canonical.className = 'navigation-v1__content';
     canonical.setAttribute('data-aue-prop', 'menuHtml');
     canonical.setAttribute('data-aue-type', 'richtext');
     canonical.setAttribute('data-aue-label', 'Navigation Menu');
-    block.appendChild(canonical);
+    root.appendChild(canonical);
   }
 
-  // If another menuHtml has authored content and canonical is empty, migrate it.
-  const donor = all.find((n) => n !== canonical && n.innerHTML.trim().length);
-  if (donor && canonical.innerHTML.trim().length === 0) {
-    canonical.innerHTML = donor.innerHTML;
+  // 2) if canonical is empty, look for a donor:
+  //    - any descendant with data-aue-prop="menuHtml"
+  //    - otherwise the first child DIV that contains a UL or links/text
+  const hasContent = (el) => el && el.innerHTML.trim().length > 0;
+  if (!hasContent(canonical)) {
+    const ueDonor = root.querySelector('[data-aue-prop="menuHtml"]:not(.navigation-v1__content)');
+    let donor = ueDonor;
+    if (!donor) {
+      donor = toArray(root.children).find((c) =>
+        c !== canonical &&
+        !!c.querySelector('ul, a, p, span, strong, em') &&
+        c.innerHTML.trim().length > 0
+      );
+    }
+    if (donor && donor !== canonical) {
+      // MOVE nodes (preserve anchors, attributes)
+      while (donor.firstChild) canonical.appendChild(donor.firstChild);
+      // remove the now-empty donor wrapper to avoid duplicate shells
+      donor.remove();
+    }
   }
 
-  // Remove duplicates (keep only canonical)
-  all.forEach((n) => { if (n !== canonical) n.remove(); });
+  // 3) remove any extra menuHtml elements (keep canonical)
+  toArray(root.querySelectorAll('[data-aue-prop="menuHtml"]'))
+    .forEach((n) => { if (n !== canonical) n.remove(); });
 
   return canonical;
 }
 
 function buildULFromContent(contentEl) {
-  // Use first top-level UL if present; else build UL from links/paras
-  let ul = contentEl.querySelector(':scope > ul');
-  if (ul) return ul.cloneNode(true);
+  // prefer top-level UL; else build UL from links/lines
+  const directUL = contentEl.querySelector(':scope > ul');
+  if (directUL) return directUL.cloneNode(true);
 
-  const links = toArray(contentEl.querySelectorAll('a'));
-  ul = document.createElement('ul');
+  const ul = document.createElement('ul');
+  const links = toArray(contentEl.querySelectorAll(':scope > a, :scope > p > a'));
   if (links.length) {
     links.forEach((a) => {
       const li = document.createElement('li');
@@ -43,12 +57,12 @@ function buildULFromContent(contentEl) {
       ul.appendChild(li);
     });
   } else {
-    // fallback: turn top-level list items (text) into LIs
-    toArray(contentEl.childNodes).forEach((node) => {
-      const text = (node.textContent || '').trim();
-      if (text) {
+    // fallback: split by block-level children
+    toArray(contentEl.children).forEach((el) => {
+      const txt = el.textContent.trim();
+      if (txt) {
         const li = document.createElement('li');
-        li.textContent = text;
+        li.textContent = txt;
         ul.appendChild(li);
       }
     });
@@ -64,17 +78,14 @@ function enhanceDropdowns(ul) {
     if (childUL) {
       li.classList.add('has-dropdown');
       childUL.classList.add('navigation-v1__dropdown');
-
       const toggle = document.createElement('button');
       toggle.className = 'navigation-v1__toggle';
       toggle.setAttribute('aria-haspopup', 'true');
       toggle.setAttribute('aria-expanded', 'false');
       toggle.innerHTML = '<span aria-hidden="true">▾</span>';
-
       const first = li.querySelector(':scope > a, :scope > span, :scope > strong') || li.firstChild;
       if (first && first.nextSibling) li.insertBefore(toggle, first.nextSibling);
       else li.appendChild(toggle);
-
       toggle.addEventListener('click', (e) => {
         e.preventDefault();
         const open = li.classList.toggle('open');
@@ -85,12 +96,11 @@ function enhanceDropdowns(ul) {
   return ul;
 }
 
-function render(block) {
-  // 1) Ensure exactly ONE binding target and migrate content into it
-  const contentEl = pickCanonicalContent(block);
+function render(wrapper) {
+  const contentEl = pickCanonicalContent(wrapper);
 
-  // 2) Rebuild nav from the canonical content
-  const prev = block.querySelector('nav.navigation-v1');
+  // rebuild nav
+  const prev = wrapper.querySelector('nav.navigation-v1');
   if (prev) prev.remove();
 
   const ul = enhanceDropdowns(buildULFromContent(contentEl));
@@ -98,22 +108,30 @@ function render(block) {
   nav.className = 'navigation-v1';
   nav.setAttribute('aria-label', 'Primary navigation');
   nav.appendChild(ul);
-  block.appendChild(nav);
+  wrapper.appendChild(nav);
 
-  // 3) Hide the authored RTE source (stay in DOM for UE editing)
+  // keep UE source but hide it in runtime
   contentEl.hidden = true;
 }
 
 export default function decorate(block) {
-  // Wrap without nuking UE nodes
-  const wrapper = document.createElement('div');
-  wrapper.className = 'navigation-v1__wrapper';
-  while (block.firstChild) wrapper.appendChild(block.firstChild);
-  block.appendChild(wrapper);
+  // reuse wrapper if already present
+  let wrapper = block.querySelector(':scope > .navigation-v1__wrapper');
+  if (!wrapper) {
+    wrapper = document.createElement('div');
+    wrapper.className = 'navigation-v1__wrapper';
+    while (block.firstChild) wrapper.appendChild(block.firstChild);
+    block.appendChild(wrapper);
+  }
+
+  // avoid infinite re-renders: disconnect MO while rendering
+  let busy = false;
+  const mo = new MutationObserver(() => {
+    if (busy) return;
+    busy = true;
+    try { render(wrapper); } finally { busy = false; }
+  });
 
   render(wrapper);
-
-  // Live updates when UE changes the richtext
-  const mo = new MutationObserver(() => render(wrapper));
   mo.observe(wrapper, { childList: true, subtree: true, characterData: true });
 }
