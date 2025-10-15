@@ -578,6 +578,7 @@ async function loadBlock(block) {
       console.log(`failed to load block ${blockName}`, error);
     }
     block.dataset.blockStatus = 'loaded';
+    block.classList.add('is-decorated');
   }
   return block;
 }
@@ -587,7 +588,7 @@ async function loadBlock(block) {
  * @param {Element} block The block element
  */
 function decorateBlock(block) {
-  const shortBlockName = block.classList[0];
+  const shortBlockName =block.dataset.blockName || [...block.classList].find((c) => c !== 'block' && c !== 'section' && !c.endsWith('-wrapper'));
   if (shortBlockName && !block.dataset.blockStatus) {
     block.classList.add('block');
     block.dataset.blockName = shortBlockName;
