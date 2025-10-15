@@ -51,7 +51,6 @@
 /* Inner list items */
 .section.contentsection1-container .contentsection1.block ul ul li {
   position: relative;
-  padding-left: 1.2rem;
   font-size: 1.05rem;
   color: #4a4a4a; /* Gray text */
   line-height: 1.5;
