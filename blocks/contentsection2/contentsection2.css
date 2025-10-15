@@ -1,9 +1,9 @@
 .section.contentsection2-container .contentsection2.block {
-  padding: 20px 40px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #4a4a4a;
+  background-color: #fff;
+  font-family: "Univers LT W01_45 Light1475944";
+  margin: 8rem;
   line-height: 1.6;
-  background-color: #ffffff;
+  color: #575756
 }
 
 /* Section headings */
