@@ -809,36 +809,6 @@
           }
         },
         {
-          "title": "header",
-          "id": "header",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "header",
-                  "model": "header"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "rich-text",
-          "id": "rich-text",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "rich-text",
-                  "model": "rich-text"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "contentsection1",
           "id": "contentsection1",
           "plugins": {

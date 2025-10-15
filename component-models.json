@@ -5270,7 +5270,7 @@
   },
   {
     "id": "contentsection",
-    "title": "contentsection",
+    "title": "Content Section",
     "fields": [
       {
         "component": "richtext",
@@ -5284,105 +5284,12 @@
         "valueType": "string",
         "name": "title",
         "label": "Title"
-      },
-      {
-        "component": "richtext",
-        "name": "text1",
-        "value": "",
-        "label": "Text1",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title1",
-        "label": "Title1"
-      },
-      {
-        "component": "richtext",
-        "name": "text2",
-        "value": "",
-        "label": "Text2",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title2",
-        "label": "Title2"
-      },
-      {
-        "component": "richtext",
-        "name": "text3",
-        "value": "",
-        "label": "Text3",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title3",
-        "label": "Title3"
-      }
-    ]
-  },
-  {
-    "id": "header",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "header",
-        "label": "header"
-      },
-      {
-        "component": "select",
-        "name": "titleType",
-        "label": "Title Type",
-        "options": [
-          {
-            "name": "h1",
-            "value": "h1"
-          },
-          {
-            "name": "h2",
-            "value": "h2"
-          },
-          {
-            "name": "h3",
-            "value": "h3"
-          },
-          {
-            "name": "h4",
-            "value": "h4"
-          },
-          {
-            "name": "h5",
-            "value": "h5"
-          },
-          {
-            "name": "h6",
-            "value": "h6"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "rich-text",
-    "fields": [
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "rich-text",
-        "valueType": "string"
       }
     ]
   },
   {
     "id": "contentsection1",
-    "title": "contentsection1",
+    "title": "Content Section1",
     "fields": [
       {
         "component": "richtext",
@@ -5394,14 +5301,14 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "jcr:title",
+        "name": "title",
         "label": "Title"
       }
     ]
   },
   {
     "id": "contentsection2",
-    "title": "contentsection2",
+    "title": "Content Section2",
     "fields": [
       {
         "component": "richtext",
@@ -5413,29 +5320,27 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "jcr:title",
+        "name": "title",
         "label": "Title"
       }
     ]
   },
   {
     "id": "contentsection3",
-    "title": "contentsection3",
+    "title": "Content Section3",
     "fields": [
       {
         "component": "richtext",
-        "name": "customtext",
-        "label": "Custom Text",
+        "name": "text",
+        "label": "Text",
         "value": "",
         "valueType": "string"
       },
       {
         "component": "text",
         "valueType": "string",
-       "name": "customtitle",
-        "label": "Custom Title",
-        "placeholder": "Enter title"
-    
+       "name": "title",
+        "label": "Title"
       }
     ]
   },

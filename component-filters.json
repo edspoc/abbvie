@@ -103,12 +103,5 @@
     "components": [
       "text"
     ]
-  },
-  {
-    "id": "contentsection",
-    "components": [
-      "header",
-      "rich-text"
-    ]
   }
 ]
