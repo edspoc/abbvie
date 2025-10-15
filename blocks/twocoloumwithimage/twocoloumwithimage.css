@@ -1,0 +1,134 @@
+/* === Section container with gradient background === */
+.section.twocoloumwithimage-container {
+  background: linear-gradient(to bottom, #ffffff 0%, #e8f5fd 100%) !important;
+  box-sizing: border-box;
+}
+
+/* === Block grid layout === */
+.section.twocoloumwithimage-container .twocoloumwithimage.block {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  align-items: flex-start !important;
+  margin: 0 auto !important;
+  box-sizing: border-box;
+}
+
+/* === Left image column === */
+.section.twocoloumwithimage-container .twocoloumwithimage.block > div:first-child img {
+  width: 100% !important;
+  max-width: 440px !important;
+  height: auto !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+/* === Title (h1) === */
+.section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(2) h1 {
+  font-family: var(--font-univers-bold-condensed) !important;
+  font-size: 40px !important;
+  font-weight: 700 !important;
+  color: #00a3df !important;
+  margin: 0 0 20px !important;
+  max-width: 500px !important;
+}
+
+/* === Paragraphs === */
+.section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(2) p {
+  font-family: var(--font-univers-ligth), Roboto, Helvetica Neue, Helvetica, Arial, sans-serif, "abbv-iconFont" !important;
+  line-height: 1.6 !important;
+  font-weight: 300 !important;
+  color: #575756 !important;
+  margin: 0 0 20px !important;
+  max-width: 600px !important;
+}
+
+/* === CTA Button === */
+.section.twocoloumwithimage-container .twocoloumwithimage.block .button-container a.button {
+  display: inline-block !important;
+  background-color: #8c1d40 !important;
+  color: #fff !important;
+  padding: 14px 28px !important;
+  border-radius: 4px !important;
+  text-decoration: none !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  transition: background 0.3s ease !important;
+}
+
+.section.twocoloumwithimage-container .twocoloumwithimage.block .button-container a.button:hover {
+  background-color: #6a1530 !important;
+}
+
+/* === Force disclaimer to align under right column === */
+.section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(3) {
+  grid-column: 2 / 3;
+  justify-self: start;
+  margin-top: -10px;
+}
+
+/* === Disclaimer paragraph styling === */
+.section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(3) p {
+  font-size: 12px !important;
+  color: #555 !important;
+  line-height: 1.5 !important;
+  max-width: 600px !important;
+  margin: 0 !important;
+}
+
+/* === Terms and Conditions link styling === */
+.section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(3) p a,
+.section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(2) p a {
+  color: #8c1d40 !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+}
+
+.section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(3) p a:hover,
+.section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(2) p a:hover
+ {
+  text-decoration: underline !important;
+}
+
+/* === Inserted logo before heading === */
+.section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(2)::before {
+  content: '';
+  display: block;
+  background-image: url('https://www.skyrizi.com/content/dam/skyriziivy/images/homepage/skyrizi-complete-logo_r25_desktop.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 300px;
+  height: 40px;
+  margin-bottom: 20px;
+}
+
+/* === Remove margin below image column to close the gap === */
+.section.twocoloumwithimage-container .twocoloumwithimage.block > div:first-child {
+  margin-bottom: 0 !important;
+}
+
+/* === Responsive styles === */
+@media (max-width: 991px) {
+  .section.twocoloumwithimage-container .twocoloumwithimage.block {
+    grid-template-columns: 1fr !important;
+    text-align: center !important;
+  }
+
+  .section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(2) h1 {
+    font-size: 26px !important;
+    margin: 20px auto !important;
+  }
+
+  .section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(2) p {
+    font-size: 16px !important;
+    margin: 0 auto 20px !important;
+  }
+
+  .section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(3) p {
+    text-align: center !important;
+    margin: 10px auto 0 !important;
+  }
+
+  .section.twocoloumwithimage-container .twocoloumwithimage.block > div:nth-child(2)::before {
+    margin: 0 auto 20px !important;
+  }
+}

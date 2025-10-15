@@ -1,0 +1,56 @@
+.section.contentsection3-container .contentsection3.block {
+  padding: 20px 40px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #4a4a4a;
+  line-height: 1.5;
+  background-color: #ffffff;
+}
+
+.section.contentsection3-container .contentsection3.block p {
+  font-size: 15px;
+  margin: 0 0 1em;
+  color: #4a4a4a;
+}
+
+.section.contentsection3-container .contentsection3.block p strong {
+  font-weight: 700;
+  color: #4a4a4a;
+}
+
+.section.contentsection3-container .contentsection3.block a {
+  color: #8a1d65;
+  text-decoration: none;
+}
+.section.contentsection3-container .contentsection3.block a:hover {
+  text-decoration: underline;
+}
+
+.section.contentsection3-container .contentsection3.block ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5em 0 1em;
+}
+
+.section.contentsection3-container .contentsection3.block ul li {
+  font-size: 14px;
+  color: #4a4a4a;
+  margin-bottom: 0.4em;
+}
+
+.section.contentsection3-container .contentsection3.block ul li a {
+  color: #8a1d65;
+  text-decoration: none;
+}
+
+.section.contentsection3-container .contentsection3.block h5 {
+  font-size: 16px;
+  color: #4a4a4a;
+  margin: 1em 0 0.5em;
+  font-weight: 700;
+}
+
+.section.contentsection3-container .contentsection3.block p:last-of-type {
+  margin-top: 1em;
+  font-size: 13px;
+  color: #4a4a4a;
+}

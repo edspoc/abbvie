@@ -1,0 +1,76 @@
+.section.contentsection2-container .contentsection2.block {
+  padding: 20px 40px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #4a4a4a;
+  line-height: 1.6;
+  background-color: #ffffff;
+}
+
+/* Section headings */
+.section.contentsection2-container .contentsection2.block h4 strong {
+  color: #009cde;
+  font-size: 18px;
+  font-weight: 700;
+  display: block;
+  margin: 25px 0 10px;
+}
+
+/* Paragraph text styling */
+.section.contentsection2-container .contentsection2.block p {
+  font-size: 18px;
+  color: #4a4a4a;
+  margin: 0 0 16px;
+}
+
+/* Remove default bullet styling */
+.section.contentsection2-container .contentsection2.block ul {
+  list-style: none;
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+/* Top-level list items */
+.section.contentsection2-container .contentsection2.block ul > li {
+  position: relative;
+  padding-left: 12px;
+  font-size: 18px;
+  color: #4a4a4a;
+  line-height: 1.5;
+}
+
+.section.contentsection2-container .contentsection2.block ul > li::before {
+  content: "•";
+  color: #009cde;
+  font-size: 22px;
+  position: absolute;
+  left: -18px;
+  top: -2px;
+}
+
+.section.contentsection2-container .contentsection2.block ul ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 40px;
+  row-gap: 4px;
+  margin-top: 10px;
+  padding-left: 0;
+}
+
+.section.contentsection2-container .contentsection2.block ul ul li {
+  font-size: 18px;
+  color: #4a4a4a;
+  line-height: 1.4;
+  margin: 0;
+  position: relative;
+  padding-left: 12px;
+  text-indent: -0.8em;
+}
+
+.section.contentsection2-container .contentsection2.block ul ul li::before {
+  content: "-";
+  color: #009cde;
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 18px;
+}

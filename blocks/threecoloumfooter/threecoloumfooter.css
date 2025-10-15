@@ -1,0 +1,98 @@
+/* === Footer Container === */
+.section.threecoloumfooter-container {
+  background: linear-gradient(to bottom, #00AEEF 0%, #005B96 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* <— THIS is key for top alignment */
+  padding: 50px 110px;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  font-family: "Roboto", Arial, sans-serif;
+}
+
+/* === Each Column === */
+.threecoloumfooter-wrapper {
+  flex: 1 1 33.333%;
+  max-width: 33.333%;
+  box-sizing: border-box;
+  padding: 0 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0px !important;
+  vertical-align: top; /* helps if display changes */
+}
+
+/* === Column Headings === */
+.threecoloumfooter-wrapper h5 {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-family: Univers LT W01_65 Bold1475968;
+  margin: 0 0 16px 0; /* reset top margin so all start same line */
+  line-height: 1.4;
+}
+
+/* === Remove List Defaults === */
+.threecoloumfooter-wrapper ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* === List Items === */
+.threecoloumfooter-wrapper li {
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+/* === Links === */
+.threecoloumfooter-wrapper a {
+  color: #ffffffcc;
+  font-size: 1rem;
+  font-family: Univers LT W01_65 Bold1475968;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.threecoloumfooter-wrapper a:hover {
+  text-decoration: underline;
+  font-weight: 700;
+}
+
+/* === Non-Link Items === */
+.threecoloumfooter-wrapper li:not(:has(a)) {
+  color: #ffffff;
+  font-size: 1.05rem;
+}
+
+/* === Privacy Icon === */
+/*.threecoloumfooter-wrapper li:last-child a::after {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zM12 20c-4.42-1.17-7-5.57-7-9.34V6.3l7-3.11 7 3.11v4.36C19 14.43 16.42 18.83 12 20z"/></svg>') no-repeat center;
+  background-size: contain;
+  margin-left: 6px;
+}*/
+
+/* === Responsive === */
+@media (max-width: 992px) {
+  .threecoloumfooter-wrapper {
+    flex: 1 1 100%;
+    max-width: 100%;
+    padding: 0;
+    margin-bottom: 30px;
+  }
+
+  .threecoloumfooter-wrapper h5 {
+    font-size: 1.1rem;
+  }
+
+  .threecoloumfooter-wrapper a,
+  .threecoloumfooter-wrapper li {
+    font-size: 0.95rem;
+  }
+}

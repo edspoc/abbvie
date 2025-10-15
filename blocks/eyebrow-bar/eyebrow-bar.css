@@ -1,0 +1,45 @@
+.block.eyebrow-bar {
+  margin: 0;
+  padding: 0;
+}
+
+.block.eyebrow-bar .eyebrow-bar {
+  background: #eaeaea;        /* soft beige/grey like the example */
+  color: #575756;              /* muted dark text */
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  font-size: 14px;
+  font-weight: lighter;
+}
+
+.block.eyebrow-bar .eyebrow-bar__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;           /* thin top bar */
+  text-align: center;          /* center like the screenshot */
+}
+
+.block.eyebrow-bar .eyebrow-bar__message a {
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.eyebrow-bar-wrapper{
+max-width: unset !important;
+padding:0 !important;
+}
+
+.eyebrow-bar-section{
+margin-bottom:0 !important;
+}
+
+.eyebrow-bar__message p{
+    margin-top:0 !important;
+    font-size: 1.06rem;
+    line-height: 2;
+}
+
+.eyebrow-bar__message p a{
+    color: #962e69;
+    font-weight:500;
+    text-decoration:none !important;
+ }

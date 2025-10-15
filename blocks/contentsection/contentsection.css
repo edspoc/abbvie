@@ -1,0 +1,51 @@
+
+/* Target the specific section container and content block */
+.section.contentsection-container .contentsection.block {
+  margin: 0 auto;
+  background-color: #fff;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+ padding-left: 3rem;
+  line-height: 1.6;
+}
+
+/* Heading (USES) */
+.section.contentsection-container .contentsection.block h3 {
+  color: #008fd5; /* matches the bright blue */
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+/* Paragraph under heading */
+.section.contentsection-container .contentsection.block p {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+/* Bullet list */
+.section.contentsection-container .contentsection.block ul {
+  list-style: disc;
+  margin-left: 20px;
+  padding-left: 0;
+}
+
+.section.contentsection-container .contentsection.block ul li {
+  font-size: 1.05rem;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+/* Change bullet color */
+.section.contentsection-container .contentsection.block ul li::marker {
+  color: #4a4a4a; /* matches bullet color in image */
+  font-size: 1.5rem; /* makes bullets slightly larger like in the screenshot */
+}
+.section.contentsection-container .contentsection.block ul li {
+  position: relative;
+  
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  color: #4a4a4a;
+}
+

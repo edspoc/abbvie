@@ -1,0 +1,69 @@
+/* Parent section wrapper */
+.section.promotional-banner-container {
+  margin: 0;
+}
+
+/* Banner wrapper */
+.promotional-banner-wrapper {
+     max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Promotional banner block */
+.promotional-banner-wrapper .promotional-banner.block {
+    background-color: #004c97;
+}
+
+/* Inner wrapper for flex layout */
+.promotional-banner-wrapper .promotional-banner__inner {
+    display: flex;
+    margin-inline: 6rem;
+    gap: 1rem;
+    padding: 20px;
+}
+
+/* Left column */
+.promotional-banner__row--1 {
+    flex: 1 1 200px;                /* flexible width, min 200px */
+    max-width: 200px;
+    display: flex;
+    align-items: center;
+}
+
+/* Right column: visually wrap the two RTEs */
+.promotional-banner__row--2,
+.promotional-banner__row--3 {
+    flex: 2 1 400px;                /* takes remaining space */
+    display: flex;
+    flex-direction: column;         /* stack RTEs vertically */
+}
+
+/* Space between RTE blocks */
+.promotional-banner__row--2 {
+    margin-bottom: 10px;
+}
+
+/* Paragraph styling */
+.promotional-banner__left-text {
+    margin: 0 0 10px 0;
+    line-height: 1;
+    font-size: 1.6em;
+    font-weight: 700;
+    font-family: Univers LT W01_67 Bold_1476016;
+    color: #fff !important;
+    margin-inline-end: 0 !important;
+}
+.promotional-banner__right-rte--one p {
+  font-size: 1.3rem;
+  font-family: Univers LT W01_67 Bold_1476016;
+  color: #fff !important;
+  margin-block: 0 !important;
+}
+
+.promotional-banner__right-rte--two p {
+ font-size: 1rem;
+  font-family: Univers LT W01_67 Bold_1476016;
+  color: #fff !important;
+  margin-block-end: 0 !important;
+}

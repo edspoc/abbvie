@@ -1,0 +1,111 @@
+/* Container */
+.block.navigation-v1 {
+  margin: 0;
+  padding: 0;
+}
+
+.block.navigation-v1 .navigation-v1 {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+/* Layout */
+.block.navigation-v1 .navigation-v1__list {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  justify-content: flex-end;
+  list-style: none;
+  margin: 0;        /* thin bar */
+}
+
+/* Top-level items */
+.block.navigation-v1 .navigation-v1__item > a {
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 1;
+  color: #1a5a7a;              /* blue-ish like example */
+}
+
+.block.navigation-v1 .navigation-v1__item.has-dropdown {
+  position: relative;
+}
+
+/* Toggle caret */
+.block.navigation-v1 .navigation-v1__toggle {
+  background: transparent;
+  border: 0;
+  margin-left: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  color: #1a5a7a;
+}
+
+/* Open state highlight (dark chip behind item) */
+.block.navigation-v1 .navigation-v1__item.open > a,
+.block.navigation-v1 .navigation-v1__item.open > .navigation-v1__toggle {
+  color: #ffffff;
+}
+
+.block.navigation-v1 .navigation-v1__item.open {
+  background: #4a4f54;        /* dark gray like screenshot */
+  border-radius: 2px;
+}
+
+/* Dropdown panel */
+.block.navigation-v1 .navigation-v1__dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + -5px);
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.12);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  list-style: none;
+  padding: 12px 16px;
+  margin: 0;
+  display: none;
+  z-index: 20;
+}
+
+.block.navigation-v1 .navigation-v1__item.open > .navigation-v1__dropdown {
+  display: block;
+}
+
+/* Dropdown items */
+.block.navigation-v1 .navigation-v1__dropdown li {
+  margin: 6px 0;
+}
+
+.block.navigation-v1 .navigation-v1__dropdown a {
+  color: #1a5a7a;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.block.navigation-v1 .navigation-v1__dropdown a:hover {
+  text-decoration: underline;
+}
+
+/* Hide authored richtext content (still in DOM for UE) */
+.block.navigation-v1 .navigation-v1__content[hidden] {
+  display: none !important;
+}
+
+.nav-v1-section{
+  margin:0 !important;
+}
+
+.navigation-v1 ul li{
+    color:#0076af;
+    font-size:12px;
+    /* tentative fix with negative vals */
+    margin-top: -5px;
+    margin-bottom: -5px;
+}
+
+.navigation-v1 ul li:hover{
+    color: #00aedf;
+}

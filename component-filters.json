@@ -15,7 +15,20 @@
       "hero",
       "cards",
       "columns",
-      "fragment"
+      "fragment",
+      "contentsection",
+      "contentsection1",
+      "contentsection2",
+      "contentsection3",
+      "twocoloumwithimage",
+      "form",
+      "embed-adaptive-form",
+      "eyebrow-bar",
+      "navigation-v1",
+      "hero-v1",
+      "twocoloumtext",
+      "threecoloumfooter",
+      "promotional-banner"
     ]
   },
   {
@@ -37,6 +50,65 @@
       "image",
       "button",
       "title"
+    ]
+  },
+  {
+    "id": "form",
+    "components": [
+      "captcha",
+      "checkbox",
+      "checkbox-group",
+      "date-input",
+      "drop-down",
+      "email",
+      "file-input",
+      "form-accordion",
+      "form-button",
+      "form-fragment",
+      "form-image",
+      "form-modal",
+      "form-reset-button",
+      "form-submit-button",
+      "number-input",
+      "panel",
+      "password",
+      "plain-text",
+      "radio-group",
+      "rating",
+      "telephone-input",
+      "text-input",
+      "tnc",
+      "wizard",
+      "range"
+    ]
+  },
+  {
+    "id": "twocoloumwithimage",
+    "components": [
+      "text",
+      "image",
+      "button",
+      "title"
+    ]
+  },
+  {
+    "id": "twocoloumtext",
+    "components": [
+      "text",
+      "title"
+    ]
+  },
+  {
+    "id": "threecoloumfooter",
+    "components": [
+      "text"
+    ]
+  },
+  {
+    "id": "contentsection",
+    "components": [
+      "header",
+      "rich-text"
     ]
   }
 ]
