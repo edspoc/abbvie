@@ -3,7 +3,8 @@
 .section.contentsection-container .contentsection.block {
   background-color: #fff;
   font-family: "Univers LT W01_45 Light1475944";
-  margin: 8rem;
+  margin-right: 8rem;
+  margin-left:8rem;
   line-height: 1.6;
   color: #575756
 }
