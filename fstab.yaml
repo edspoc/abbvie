@@ -1,5 +1,5 @@
 mountpoints:
   /:
-    url: "https://author-p131558-e1552862.adobeaemcloud.com/bin/franklin.delivery/edspoc/abbvie/main"
+    url: "https://author-p34583-e129559.adobeaemcloud.com/bin/franklin.delivery/edspoc/abbvie/main"
     type: "markup"
     suffix: ".html"
