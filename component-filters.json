@@ -107,20 +107,34 @@
   },
   {
     "id": "accordion-image-50-50",
-    "filters": [
-      {
-        "id": "items",
-        "type": "array",
-        "properties": [
-          "title",
-          "body",
-          "link",
-          "linkText",
-          "image",
-          "imageAlt"
-        ]
+    "source": "html",
+    "filter": {
+      "block": {
+        "selector": ".accordion-image-50-50",
+        "fields": {
+          "items": {
+            "type": "list",
+            "selector": ".accordion-item",
+            "fields": {
+              "title": ".accordion-title",
+              "body": ".accordion-body",
+              "link": {
+                "selector": ".accordion-cta",
+                "attribute": "href"
+              },
+              "linkText": ".accordion-cta",
+              "image": {
+                "selector": ".accordion-image",
+                "attribute": "src"
+              },
+              "imageAlt": {
+                "selector": ".accordion-image",
+                "attribute": "alt"
+              }
+            }
+          }
+        }
       }
-    ]
+    }
   }
-
 ]

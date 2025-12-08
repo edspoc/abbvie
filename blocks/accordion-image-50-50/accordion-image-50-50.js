@@ -1,10 +1,38 @@
-export default function decorate(block) {
-  // IMPORTANT: do NOT clear block yet
-  const rows = Array.from(block.children);
+async function fetchModel(block) {
+  const urn = block.dataset.aueResource;
+  if (!urn) return null;
 
-  if (!rows.length) return;
+  // urn:aemconnection:/content/abbvie/index/jcr:content/...
+  const resourcePath = urn.replace('urn:aemconnection:', '');
+  const modelUrl = `${resourcePath}.model.json`;
 
-  // build wrapper
+  try {
+    const resp = await fetch(modelUrl);
+    if (!resp.ok) {
+      console.warn('accordion-image-50-50: model fetch failed', modelUrl, resp.status);
+      return null;
+    }
+    return resp.json();
+  } catch (e) {
+    console.error('accordion-image-50-50: model fetch error', e);
+    return null;
+  }
+}
+
+export default async function decorate(block) {
+  // 1. Load model data
+  const model = (await fetchModel(block)) || {};
+  const items = model.items || [];
+
+  // If nothing authored, just bail
+  if (!items.length) {
+    block.innerHTML = '';
+    return;
+  }
+
+  // 2. Base layout
+  block.innerHTML = '';
+
   const wrapper = document.createElement('div');
   wrapper.className = 'accordion-image-50-50';
 
@@ -18,60 +46,69 @@ export default function decorate(block) {
   img.className = 'accordion-image';
   right.appendChild(img);
 
-  rows.forEach((row, index) => {
-    const cols = Array.from(row.children);
+  wrapper.append(left, right);
+  block.appendChild(wrapper);
 
-    const title = cols[0]?.textContent?.trim();
-    const body = cols[1]?.innerHTML;
-    const link = cols[2]?.textContent?.trim();
-    const linkText = cols[3]?.textContent?.trim();
-    const image = cols[4]?.querySelector('img')?.src;
-    const alt = cols[5]?.textContent?.trim() || '';
+  // 3. Build accordion items
+  items.forEach((item, index) => {
+    const accordionItem = document.createElement('div');
+    accordionItem.className = 'accordion-item';
+    if (index === 0) accordionItem.classList.add('active');
 
-    const item = document.createElement('div');
-    item.className = 'accordion-item';
+    const headerBtn = document.createElement('button');
+    headerBtn.type = 'button';
+    headerBtn.className = 'accordion-header';
 
-    item.innerHTML = `
-      <button class="accordion-header">
-        <span class="accordion-title">${title}</span>
-        <span class="accordion-icon">▾</span>
-      </button>
-      <div class="accordion-body">
-        ${body || ''}
-        ${
-          link
-            ? `<a class="accordion-link" href="${link}">
-                ${linkText || 'Learn more'} →
-              </a>`
-            : ''
-        }
-      </div>
-    `;
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'accordion-title';
+    titleSpan.textContent = item.title || '';
 
-    item.querySelector('.accordion-header').addEventListener('click', () => {
-      left.querySelectorAll('.accordion-item')
-        .forEach(i => i.classList.remove('active'));
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'accordion-icon';
+    iconSpan.textContent = '▾';
 
-      item.classList.add('active');
+    headerBtn.append(titleSpan, iconSpan);
 
-      if (image) {
-        img.src = image;
-        img.alt = alt;
+    const bodyDiv = document.createElement('div');
+    bodyDiv.className = 'accordion-body';
+    bodyDiv.innerHTML = item.body || '';
+
+    if (item.link && item.linkText) {
+      const cta = document.createElement('a');
+      cta.className = 'accordion-cta';
+      cta.href = item.link;
+      cta.textContent = item.linkText;
+      bodyDiv.appendChild(cta);
+    }
+
+    // Click behavior: open item + swap image
+    headerBtn.addEventListener('click', () => {
+      [...left.querySelectorAll('.accordion-item')].forEach((el) => {
+        el.classList.remove('active');
+      });
+      accordionItem.classList.add('active');
+
+      if (item.image) {
+        img.src = item.image;
+        img.alt = item.imageAlt || '';
+        img.style.display = '';
+      } else {
+        img.removeAttribute('src');
+        img.alt = '';
+        img.style.display = 'none';
       }
     });
 
-    // default open
-    if (index === 0 && image) {
-      item.classList.add('active');
-      img.src = image;
-      img.alt = alt;
-    }
-
-    left.appendChild(item);
+    accordionItem.append(headerBtn, bodyDiv);
+    left.appendChild(accordionItem);
   });
 
-  // NOW clear block (after reading rows)
-  block.innerHTML = '';
-  wrapper.append(left, right);
-  block.append(wrapper);
+  // 4. Initialize image with first item
+  const first = items[0];
+  if (first && first.image) {
+    img.src = first.image;
+    img.alt = first.imageAlt || '';
+  } else {
+    img.style.display = 'none';
+  }
 }
