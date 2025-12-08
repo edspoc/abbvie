@@ -5188,7 +5188,7 @@
           { "component": "text", "name": "link", "label": "CTA Link" },
           { "component": "text", "name": "linkText", "label": "CTA Label" },
           {
-            "component": "asset",
+            "component": "reference",
             "name": "image",
             "label": "Image",
             "assetType": "image"
