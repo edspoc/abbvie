@@ -1,33 +1,39 @@
 export default async function decorate(block) {
   const wrapper = block.closest('[data-aue-resource]');
   if (!wrapper) {
-    console.error('[accordion-image] No aue resource found');
+    console.error('[accordion-image] No data-aue-resource found');
     return;
   }
 
   const resourcePath = wrapper.dataset.aueResource.replace('urn:aemconnection:', '');
-  console.log('[accordion-image] resource path:', resourcePath);
+  console.log('[accordion-image] resourcePath:', resourcePath);
 
-  // ✅ THIS is the correct endpoint
+  // ✅ ONLY endpoint that matters
   const itemsUrl = `${resourcePath}/items.1.json`;
   console.log('[accordion-image] fetching:', itemsUrl);
 
-  const res = await fetch(itemsUrl);
-  if (!res.ok) {
-    console.error('[accordion-image] items load failed', res.status);
+  let raw;
+  try {
+    const res = await fetch(itemsUrl);
+    if (!res.ok) {
+      console.error('[accordion-image] failed to load items.', res.status);
+      return;
+    }
+    raw = await res.json();
+  } catch (e) {
+    console.error('[accordion-image] fetch error', e);
     return;
   }
 
-  const raw = await res.json();
-  console.log('[accordion-image] raw items JSON:', raw);
+  console.log('[accordion-image] raw items json:', raw);
 
-  // convert { item0:{}, item1:{} } → array
   const items = Object.values(raw || {});
   if (!items.length) {
     console.warn('[accordion-image] No accordion items found');
     return;
   }
 
+  // Build markup
   block.innerHTML = `
     <div class="accordion-image-50-50">
       <div class="accordion-left"></div>
@@ -46,11 +52,11 @@ export default async function decorate(block) {
 
     el.innerHTML = `
       <button class="accordion-header">
-        <span class="accordion-title">${item.title ?? ''}</span>
+        <span class="accordion-title">${item.title || ''}</span>
         <span class="accordion-icon">▾</span>
       </button>
       <div class="accordion-body">
-        ${item.body ?? ''}
+        ${item.body || ''}
         ${
           item.link && item.linkText
             ? `<a class="accordion-cta" href="${item.link}">${item.linkText}</a>`
@@ -60,8 +66,11 @@ export default async function decorate(block) {
     `;
 
     el.querySelector('.accordion-header').addEventListener('click', () => {
-      block.querySelectorAll('.accordion-item').forEach(a => a.classList.remove('active'));
+      block.querySelectorAll('.accordion-item')
+        .forEach(a => a.classList.remove('active'));
+
       el.classList.add('active');
+
       if (item.image) {
         img.src = item.image;
         img.alt = item.imageAlt || '';
