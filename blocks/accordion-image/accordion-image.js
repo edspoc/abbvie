@@ -1,5 +1,5 @@
 /**
- * accordion-image-50-50.js
+ * accordion-image.js
  * Self-contained EDS block JS (no external imports)
  */
 
@@ -89,7 +89,7 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   const root = document.createElement('div');
-  root.className = 'accordion-image-50-50';
+  root.className = 'accordion-image';
 
   const left = document.createElement('div');
   left.className = 'accordion-left';

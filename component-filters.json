@@ -29,7 +29,7 @@
       "twocoloumtext",
       "threecoloumfooter",
       "promotional-banner",
-      "accordion-image-50-50"
+      "accordion-image"
     ]
   },
   {
@@ -106,7 +106,7 @@
     ]
   },
   {
-    "id": "accordion-image-50-50",
+    "id": "accordion-image",
     "filters": [
       {
         "id": "items",

@@ -1,29 +1,29 @@
-/* blocks/accordion-image-50-50/accordion-image-50-50.css */
+/* blocks/accordion-image/accordion-image.css */
 
-.accordion-image-50-50 {
+.accordion-image {
   display: flex;
   min-height: 400px;
 }
 
 /* 50 / 50 split */
-.accordion-image-50-50 .accordion-left,
-.accordion-image-50-50 .accordion-right {
+.accordion-image .accordion-left,
+.accordion-image .accordion-right {
   width: 50%;
 }
 
 /* LEFT: accordion */
 
-.accordion-image-50-50 .accordion-left {
+.accordion-image .accordion-left {
   display: flex;
   flex-direction: column;
   border-right: 1px solid #e0e0e0;
 }
 
-.accordion-image-50-50 .accordion-item {
+.accordion-image .accordion-item {
   border-bottom: 1px solid #e0e0e0;
 }
 
-.accordion-image-50-50 .accordion-header {
+.accordion-image .accordion-header {
   width: 100%;
   padding: 18px 24px;
   border: none;
@@ -36,22 +36,22 @@
   line-height: 1.4;
 }
 
-.accordion-image-50-50 .accordion-title {
+.accordion-image .accordion-title {
   flex: 1;
   text-align: left;
 }
 
-.accordion-image-50-50 .accordion-icon {
+.accordion-image .accordion-icon {
   margin-left: 12px;
 }
 
 /* active state similar to screenshot (blue left bar + outline) */
-.accordion-image-50-50 .accordion-item.active .accordion-header {
+.accordion-image .accordion-item.active .accordion-header {
   box-shadow: 0 0 0 1px #0f62fe inset;
   border-left: 4px solid #0f62fe;
 }
 
-.accordion-image-50-50 .accordion-body {
+.accordion-image .accordion-body {
   font-size: 16px;
   padding: 0 24px 0;
   max-height: 0;
@@ -59,12 +59,12 @@
   transition: max-height 0.25s ease, padding-bottom 0.25s ease;
 }
 
-.accordion-image-50-50 .accordion-item.active .accordion-body {
+.accordion-image .accordion-item.active .accordion-body {
   padding-bottom: 16px;
   max-height: 400px; /* adjust if needed */
 }
 
-.accordion-image-50-50 .accordion-cta {
+.accordion-image .accordion-cta {
   display: inline-flex;
   margin-top: 12px;
   font-weight: 500;
@@ -74,11 +74,11 @@
 
 /* RIGHT: image */
 
-.accordion-image-50-50 .accordion-right {
+.accordion-image .accordion-right {
   position: relative;
 }
 
-.accordion-image-50-50 .accordion-image {
+.accordion-image .accordion-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
