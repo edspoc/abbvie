@@ -1,79 +1,78 @@
-<script>
-  (function () {
-    function initAccordionWithImage(root) {
-      if (!root) return;
+export default function decorate(block) {
+  // STEP 1: read raw rows FIRST
+  const rows = Array.from(block.children);
 
-      const items = Array.from(root.querySelectorAll('.eds-accordion__item'));
-      const imageEl = root.querySelector('.eds-acc-img__image');
+  if (!rows.length) {
+    return;
+  }
 
-      if (!items.length || !imageEl) return;
+  // STEP 2: create layout
+  const wrapper = document.createElement('div');
+  wrapper.className = 'accordion-image-50-50';
 
-      function activateItem(item) {
-        const header = item.querySelector('.eds-accordion__header');
-        const panel = item.querySelector('.eds-accordion__panel');
+  const left = document.createElement('div');
+  left.className = 'accordion-left';
 
-        if (!header || !panel) return;
+  const right = document.createElement('div');
+  right.className = 'accordion-right';
 
-        // Close all items
-        items.forEach(function (itm) {
-          const hdr = itm.querySelector('.eds-accordion__header');
-          const pnl = itm.querySelector('.eds-accordion__panel');
-          if (!hdr || !pnl) return;
+  const img = document.createElement('img');
+  img.className = 'accordion-image';
+  right.appendChild(img);
 
-          itm.classList.remove('is-active');
-          hdr.setAttribute('aria-expanded', 'false');
-          pnl.hidden = true;
-        });
+  // STEP 3: build accordion from DOM rows
+  rows.forEach((row, index) => {
+    const cols = Array.from(row.children);
 
-        // Open current item
-        item.classList.add('is-active');
-        header.setAttribute('aria-expanded', 'true');
-        panel.hidden = false;
+    // ⬇️ THIS ORDER MUST MATCH YOUR MODEL FIELDS
+    const title = cols[0]?.textContent?.trim();
+    const body = cols[1]?.innerHTML;
+    const link = cols[2]?.textContent?.trim();
+    const linkText = cols[3]?.textContent?.trim();
+    const image = cols[4]?.querySelector('img')?.src;
+    const imageAlt = cols[5]?.textContent?.trim() || '';
 
-        // Update image from data attributes on header
-        const imgSrc = header.getAttribute('data-image');
-        const imgAlt = header.getAttribute('data-image-alt');
+    const item = document.createElement('div');
+    item.className = 'accordion-item';
 
-        if (imgSrc) {
-          imageEl.src = imgSrc;
+    item.innerHTML = `
+      <button class="accordion-header">${title || ''}</button>
+      <div class="accordion-body">
+        ${body || ''}
+        ${
+          link
+            ? `<a class="accordion-cta" href="${link}">
+                 ${linkText || 'Learn more'}
+               </a>`
+            : ''
         }
-        if (imgAlt) {
-          imageEl.alt = imgAlt;
-        }
+      </div>
+    `;
+
+    item.querySelector('.accordion-header').addEventListener('click', () => {
+      left.querySelectorAll('.accordion-item')
+        .forEach(i => i.classList.remove('active'));
+
+      item.classList.add('active');
+
+      if (image) {
+        img.src = image;
+        img.alt = imageAlt;
       }
+    });
 
-      // Attach click listeners
-      items.forEach(function (item) {
-        const header = item.querySelector('.eds-accordion__header');
-        if (!header) return;
-
-        header.addEventListener('click', function () {
-          // if already active, you can decide to collapse; here we keep it open
-          if (!item.classList.contains('is-active')) {
-            activateItem(item);
-          }
-        });
-      });
-
-      // Initial state: if none active, activate the first
-      var initiallyActive = items.find(function (itm) {
-        return itm.classList.contains('is-active');
-      });
-
-      if (!initiallyActive) {
-        activateItem(items[0]);
-      } else {
-        // Ensure image matches the active item on load
-        activateItem(initiallyActive);
-      }
+    // Default open first
+    if (index === 0 && image) {
+      item.classList.add('active');
+      img.src = image;
+      img.alt = imageAlt;
     }
 
-    // Init all components on page
-    document.addEventListener('DOMContentLoaded', function () {
-      const components = document.querySelectorAll(
-        '.eds-acc-img[data-component="accordion-with-image"]'
-      );
-      components.forEach(initAccordionWithImage);
-    });
-  })();
-</script>
+    left.appendChild(item);
+  });
+
+  // STEP 4: replace block content
+  block.innerHTML = '';
+  wrapper.append(left, right);
+  block.append(wrapper);
+}
