@@ -1,43 +1,62 @@
-// /blocks/accordion-image-50-50/accordion-image-50-50.js
-import { getComponent } from '../../scripts/aem.js';
+// blocks/accordion-image-50-50/accordion-image-50-50.js
+import { getAemContentPath } from '../../scripts/aem.js'; // ✅ this exists in EDS starter
 
 export default async function decorate(block) {
-  console.log('accordion-image-50-50: decorate() called for block', block);
+  console.log('[accordion-image-50-50] decorate() start');
 
-  // 1. Get the EDS model for this instance of the component
-  const model = await getComponent(block);
-  console.log('accordion-image-50-50: raw model from getComponent:', model);
+  // 1) Find the AEM resource URN from the wrapper
+  const wrapper = block.closest('[data-aue-resource]');
+  if (!wrapper) {
+    console.warn('[accordion-image-50-50] no data-aue-resource found');
+    return;
+  }
 
-  // Depending on your setup, data might be on model or model.data
-  const data = model?.data || model || {};
-  console.log('accordion-image-50-50: normalized data object:', data);
+  const urn = wrapper.dataset.aueResource;
+  console.log('[accordion-image-50-50] data-aue-resource =', urn);
 
-  const items = data.items || [];
-  const optionalHeading = data.heading || data.title || data.optionalHeading || '';
+  // 2) Turn URN into AEM content path
+  const path = getAemContentPath(urn);
+  console.log('[accordion-image-50-50] AEM path =', path);
 
-  console.log('accordion-image-50-50: optionalHeading:', optionalHeading);
-  console.log('accordion-image-50-50: items array:', items);
+  const modelUrl = `${path}.model.json`;
+  console.log('[accordion-image-50-50] model URL =', modelUrl);
+
+  // 3) Fetch model.json
+  let model;
+  try {
+    const res = await fetch(modelUrl);
+    console.log('[accordion-image-50-50] model fetch status =', res.status);
+
+    if (!res.ok) {
+      console.error('[accordion-image-50-50] model fetch failed', res.status, res.statusText);
+      return;
+    }
+    model = await res.json();
+  } catch (e) {
+    console.error('[accordion-image-50-50] model fetch error', e);
+    return;
+  }
+
+  console.log('[accordion-image-50-50] raw model.json =', model);
+
+  // Depending on how xwalk maps it, items may be under fields/items or directly items
+  const items =
+    model?.items ||
+    model?.fields?.items ||
+    model?.accordionItems ||
+    [];
+
+  console.log('[accordion-image-50-50] resolved items =', items);
 
   if (!items.length) {
-    console.warn('accordion-image-50-50: NO items found in model. Check model.json / authoring.');
+    console.warn('[accordion-image-50-50] no items in model – check model.json');
   }
 
-  // 2. Remove any placeholder HTML that was there before
+  // 4) Build DOM
   block.innerHTML = '';
 
-  const wrapper = document.createElement('div');
-  wrapper.className = 'accordion-image-50-50';
-
-  // Optional heading above the 50/50 layout
-  if (optionalHeading) {
-    const headingEl = document.createElement('h2');
-    headingEl.className = 'accordion-heading';
-    headingEl.textContent = optionalHeading;
-    wrapper.append(headingEl);
-  }
-
-  const layout = document.createElement('div');
-  layout.className = 'accordion-image-50-50-layout';
+  const root = document.createElement('div');
+  root.className = 'accordion-image-50-50';
 
   const left = document.createElement('div');
   left.className = 'accordion-left';
@@ -45,93 +64,81 @@ export default async function decorate(block) {
   const right = document.createElement('div');
   right.className = 'accordion-right';
 
-  const image = document.createElement('img');
-  image.className = 'accordion-image';
-  right.append(image);
+  const img = document.createElement('img');
+  img.className = 'accordion-image';
+  right.appendChild(img);
 
-  layout.append(left, right);
-  wrapper.append(layout);
-  block.append(wrapper);
+  root.append(left, right);
+  block.append(root);
 
-  // 3. Build accordion items from the model
+  // 5) Create accordion items from model
   items.forEach((item, index) => {
-    console.log(`accordion-image-50-50: rendering item[${index}]`, item);
+    console.log(`[accordion-image-50-50] building item[${index}] =`, item);
 
-    const {
-      title = '',
-      body = '',
-      link,
-      linkText,
-      image: itemImage,
-      imageAlt = '',
-    } = item || {};
+    const accItem = document.createElement('div');
+    accItem.className = 'accordion-item';
+    if (index === 0) accItem.classList.add('active');
 
-    const accordionItem = document.createElement('div');
-    accordionItem.className = 'accordion-item';
-    if (index === 0) accordionItem.classList.add('active');
-
-    const header = document.createElement('button');
-    header.type = 'button';
-    header.className = 'accordion-header';
+    const headerBtn = document.createElement('button');
+    headerBtn.type = 'button';
+    headerBtn.className = 'accordion-header';
 
     const titleSpan = document.createElement('span');
     titleSpan.className = 'accordion-title';
-    titleSpan.textContent = title;
+    titleSpan.textContent = item.title || '';
 
     const iconSpan = document.createElement('span');
     iconSpan.className = 'accordion-icon';
     iconSpan.textContent = '▾';
 
-    header.append(titleSpan, iconSpan);
+    headerBtn.append(titleSpan, iconSpan);
 
-    const bodyDiv = document.createElement('div');
-    bodyDiv.className = 'accordion-body';
-    bodyDiv.innerHTML = body || '';
+    const body = document.createElement('div');
+    body.className = 'accordion-body';
 
-    if (link && linkText) {
+    if (item.body) {
+      // body is richtext HTML from the model
+      body.innerHTML = item.body;
+    }
+
+    if (item.link && item.linkText) {
       const cta = document.createElement('a');
+      cta.href = item.link;
+      cta.textContent = item.linkText;
       cta.className = 'accordion-cta';
-      cta.href = link;
-      cta.textContent = linkText;
-      bodyDiv.append(cta);
+      body.appendChild(cta);
     }
 
-    accordionItem.append(header, bodyDiv);
-    left.append(accordionItem);
+    accItem.append(headerBtn, body);
+    left.appendChild(accItem);
 
-    // Helper to extract image src from different shapes (string or object)
-    const getImageSrc = (img) => {
-      if (!img) return '';
-      if (typeof img === 'string') return img;
-      return img.path || img.src || img.url || '';
-    };
+    // click handler
+    headerBtn.addEventListener('click', () => {
+      console.log(`[accordion-image-50-50] clicked item[${index}]`);
 
-    const imgSrc = getImageSrc(itemImage);
-
-    // Set initial image from first item
-    if (index === 0 && imgSrc) {
-      console.log('accordion-image-50-50: initial image src:', imgSrc);
-      image.src = imgSrc;
-      image.alt = imageAlt || title || '';
-    }
-
-    // 4. Click handler – switch active item + image
-    header.addEventListener('click', () => {
-      console.log(`accordion-image-50-50: clicked item[${index}]`, item);
-
-      // collapse others
-      left.querySelectorAll('.accordion-item').forEach((el) => {
-        el.classList.remove('active');
+      // deactivate all
+      left.querySelectorAll('.accordion-item').forEach((n) => {
+        n.classList.remove('active');
       });
-      accordionItem.classList.add('active');
 
-      const newSrc = getImageSrc(itemImage);
-      console.log('accordion-image-50-50: switching image to:', newSrc);
+      // activate this
+      accItem.classList.add('active');
 
-      if (newSrc) {
-        image.src = newSrc;
-        image.alt = imageAlt || title || '';
+      // change image
+      if (item.image) {
+        img.src = item.image;
+        img.alt = item.imageAlt || '';
+        console.log('[accordion-image-50-50] image set to', item.image);
       }
     });
+
+    // Set initial image from first item
+    if (index === 0 && item.image) {
+      img.src = item.image;
+      img.alt = item.imageAlt || '';
+      console.log('[accordion-image-50-50] initial image =', item.image);
+    }
   });
+
+  console.log('[accordion-image-50-50] decorate() done');
 }
