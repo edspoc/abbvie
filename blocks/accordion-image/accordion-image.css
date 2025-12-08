@@ -1,86 +1,91 @@
-/* blocks/accordion-image/accordion-image.css */
-
-.accordion-image {
+/* Outer wrapper */
+.accordion-image-50-50 {
   display: flex;
-  min-height: 400px;
+  gap: 2rem;
+  align-items: stretch;
 }
 
-/* 50 / 50 split */
-.accordion-image .accordion-left,
-.accordion-image .accordion-right {
-  width: 50%;
+/* 50 / 50 columns */
+.accordion-image-50-50 .accordion-left,
+.accordion-image-50-50 .accordion-right {
+  flex: 1 1 50%;
 }
 
-/* LEFT: accordion */
-
-.accordion-image .accordion-left {
+/* Left side (accordion) */
+.accordion-image-50-50 .accordion-left {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #e0e0e0;
+  gap: 0.5rem;
 }
 
-.accordion-image .accordion-item {
-  border-bottom: 1px solid #e0e0e0;
+/* Individual item */
+.accordion-image-50-50 .accordion-item {
+  border-bottom: 1px solid #ddd;
 }
 
-.accordion-image .accordion-header {
+/* Header */
+.accordion-image-50-50 .accordion-header {
   width: 100%;
-  padding: 18px 24px;
-  border: none;
   background: transparent;
-  cursor: pointer;
+  border: none;
+  padding: 1rem 0;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  font-size: 18px;
-  line-height: 1.4;
+  align-items: center;
+  cursor: pointer;
+  font: inherit;
 }
 
-.accordion-image .accordion-title {
-  flex: 1;
-  text-align: left;
+.accordion-image-50-50 .accordion-title {
+  font-weight: 600;
 }
 
-.accordion-image .accordion-icon {
-  margin-left: 12px;
+.accordion-image-50-50 .accordion-icon {
+  transition: transform 0.2s ease;
 }
 
-/* active state similar to screenshot (blue left bar + outline) */
-.accordion-image .accordion-item.active .accordion-header {
-  box-shadow: 0 0 0 1px #0f62fe inset;
-  border-left: 4px solid #0f62fe;
-}
-
-.accordion-image .accordion-body {
-  font-size: 16px;
-  padding: 0 24px 0;
+/* Body */
+.accordion-image-50-50 .accordion-body {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.25s ease, padding-bottom 0.25s ease;
+  transition: max-height 0.25s ease;
 }
 
-.accordion-image .accordion-item.active .accordion-body {
-  padding-bottom: 16px;
-  max-height: 400px; /* adjust if needed */
+.accordion-image-50-50 .accordion-body-text {
+  padding: 0 0 1rem 0;
 }
 
-.accordion-image .accordion-cta {
-  display: inline-flex;
-  margin-top: 12px;
-  font-weight: 500;
-  text-decoration: none;
-  color: #0f62fe;
+.accordion-image-50-50 .accordion-cta {
+  display: inline-block;
+  margin-bottom: 1rem;
+  text-decoration: underline;
 }
 
-/* RIGHT: image */
-
-.accordion-image .accordion-right {
-  position: relative;
+/* Active state */
+.accordion-image-50-50 .accordion-item.active .accordion-body {
+  max-height: 600px; /* enough for typical content */
 }
 
-.accordion-image .accordion-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.accordion-image-50-50 .accordion-item.active .accordion-icon {
+  transform: rotate(180deg);
+}
+
+/* Right side (image) */
+.accordion-image-50-50 .accordion-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.accordion-image-50-50 .accordion-image {
+  max-width: 100%;
+  height: auto;
   display: block;
+}
+
+/* Small screens: stack */
+@media (max-width: 768px) {
+  .accordion-image-50-50 {
+    flex-direction: column;
+  }
 }
