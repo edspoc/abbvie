@@ -1,111 +1,95 @@
-// blocks/accordion-image-50-50/accordion-image-50-50.js
+/**
+ * accordion-image-50-50.js
+ * Self-contained EDS block JS (no external imports)
+ */
 
 /**
- * Extracts the AEM content path from the data-aue-resource attribute.
+ * Get AEM content path from data-aue-resource
  * Example:
- *   urn:aemconnection:/content/abbvie/index/jcr:content/...  ->  /content/abbvie/index/jcr:content/...
+ * urn:aemconnection:/content/abbvie/index/jcr:content/...
+ * → /content/abbvie/index/jcr:content/...
  */
-function getAemContentPathFromBlock(block) {
-  const resourceEl = block.closest('[data-aue-resource]');
-  if (!resourceEl) {
-    console.warn('[accordion-image-50-50] No data-aue-resource attribute found');
+function getAemPath(block) {
+  const el = block.closest('[data-aue-resource]');
+  if (!el) {
+    console.warn('[AIM5050] data-aue-resource not found');
     return null;
   }
 
-  const urn = resourceEl.getAttribute('data-aue-resource') || '';
-  const parts = urn.split(':');
-  const path = parts[parts.length - 1]; // take everything after last colon
-  console.log('[accordion-image-50-50] aem content path:', path);
+  const urn = el.getAttribute('data-aue-resource');
+  console.log('[AIM5050] urn:', urn);
+
+  const path = urn.split(':').pop();
+  console.log('[AIM5050] resolved content path:', path);
+
   return path;
 }
 
 /**
- * Tries to find the "items" array in the model.json response.
- * This is defensive so it works even if the JSON structure is slightly different.
+ * Safely extract items array from model.json
  */
-function extractItemsFromModel(modelJson) {
-  if (!modelJson || typeof modelJson !== 'object') {
-    console.warn('[accordion-image-50-50] modelJson is not an object', modelJson);
-    return [];
-  }
+function extractItems(model) {
+  console.log('[AIM5050] raw model.json:', model);
 
-  // direct items on root
-  if (Array.isArray(modelJson.items)) {
-    return modelJson.items;
-  }
+  if (Array.isArray(model?.items)) return model.items;
+  if (model?.fields?.items) return model.fields.items;
 
-  // items under data -> <component-id> -> items
-  if (modelJson.data && typeof modelJson.data === 'object') {
-    const data = modelJson.data;
-    const keys = Object.keys(data);
-    for (const key of keys) {
-      if (Array.isArray(data[key]?.items)) {
-        return data[key].items;
+  if (model?.data) {
+    for (const key of Object.keys(model.data)) {
+      if (Array.isArray(model.data[key]?.items)) {
+        return model.data[key].items;
       }
     }
   }
 
-  console.warn('[accordion-image-50-50] could not find items array in model.json', modelJson);
+  console.warn('[AIM5050] No items found in model');
   return [];
 }
 
 /**
- * Updates the image on the right side when an accordion item is active.
+ * Resolve image path (reference field can be string or array/object)
  */
-function updateRightImage(rightContainer, item) {
-  const imgEl = rightContainer.querySelector('img.accordion-image');
-  if (!imgEl) return;
+function resolveImage(item) {
+  const img = item?.image;
 
-  const imagePath =
-    (Array.isArray(item.image) && item.image[0]?.path) ||
-    (Array.isArray(item.image) && item.image[0]) ||
-    item.image ||
-    '';
+  if (!img) return '';
 
-  imgEl.src = imagePath || '';
-  imgEl.alt = item.imageAlt || '';
+  if (typeof img === 'string') return img;
+  if (Array.isArray(img)) return img[0]?.path || img[0];
+  if (typeof img === 'object') return img.path || '';
+
+  return '';
 }
 
-/**
- * Main decorate function called by Franklin.
- */
 export default async function decorate(block) {
-  console.log('[accordion-image-50-50] decorate start');
+  console.log('[AIM5050] decorate() called');
 
-  // 1. Fetch model.json
-  const contentPath = getAemContentPathFromBlock(block);
-  if (!contentPath) {
-    return;
-  }
+  /* 1. Fetch model.json */
+  const contentPath = getAemPath(block);
+  if (!contentPath) return;
 
-  let modelJson;
+  let model;
   try {
-    const resp = await fetch(`${contentPath}.model.json`);
-    if (!resp.ok) {
-      console.error('[accordion-image-50-50] failed to fetch model.json', resp.status);
-      return;
-    }
-    modelJson = await resp.json();
+    const res = await fetch(`${contentPath}.model.json`);
+    console.log('[AIM5050] model.json status:', res.status);
+
+    if (!res.ok) return;
+    model = await res.json();
   } catch (e) {
-    console.error('[accordion-image-50-50] error fetching model.json', e);
+    console.error('[AIM5050] model.json fetch failed', e);
     return;
   }
 
-  console.log('[accordion-image-50-50] model.json:', modelJson);
+  const items = extractItems(model);
+  console.log('[AIM5050] extracted items:', items);
 
-  const items = extractItemsFromModel(modelJson);
-  console.log('[accordion-image-50-50] extracted items:', items);
+  if (!items.length) return;
 
-  if (!items.length) {
-    // nothing to render
-    return;
-  }
-
-  // 2. Clear block and build 50/50 layout
+  /* 2. Build base layout (50 / 50) */
   block.innerHTML = '';
 
-  const wrapper = document.createElement('div');
-  wrapper.className = 'accordion-image-50-50';
+  const root = document.createElement('div');
+  root.className = 'accordion-image-50-50';
 
   const left = document.createElement('div');
   left.className = 'accordion-left';
@@ -113,64 +97,74 @@ export default async function decorate(block) {
   const right = document.createElement('div');
   right.className = 'accordion-right';
 
-  const img = document.createElement('img');
-  img.className = 'accordion-image';
-  right.appendChild(img);
+  const image = document.createElement('img');
+  image.className = 'accordion-image';
+  right.appendChild(image);
 
-  wrapper.appendChild(left);
-  wrapper.appendChild(right);
-  block.appendChild(wrapper);
+  root.append(left, right);
+  block.appendChild(root);
 
-  // 3. Build accordion items
+  /* 3. Build accordion items */
   items.forEach((item, index) => {
-    const accordionItem = document.createElement('div');
-    accordionItem.className = 'accordion-item';
-    if (index === 0) {
-      accordionItem.classList.add('active');
-    }
+    console.log(`[AIM5050] item[${index}]`, item);
 
-    const headerBtn = document.createElement('button');
-    headerBtn.type = 'button';
-    headerBtn.className = 'accordion-header';
+    const acc = document.createElement('div');
+    acc.className = 'accordion-item';
+    if (index === 0) acc.classList.add('active');
 
-    const titleSpan = document.createElement('span');
-    titleSpan.className = 'accordion-title';
-    titleSpan.textContent = item.title || '';
+    const header = document.createElement('button');
+    header.type = 'button';
+    header.className = 'accordion-header';
 
-    const iconSpan = document.createElement('span');
-    iconSpan.className = 'accordion-icon';
-    iconSpan.textContent = '▾';
+    const title = document.createElement('span');
+    title.className = 'accordion-title';
+    title.textContent = item.title || '';
 
-    headerBtn.appendChild(titleSpan);
-    headerBtn.appendChild(iconSpan);
+    const icon = document.createElement('span');
+    icon.className = 'accordion-icon';
+    icon.textContent = '▾';
 
-    const bodyDiv = document.createElement('div');
-    bodyDiv.className = 'accordion-body';
+    header.append(title, icon);
 
-    if (item.body) {
-      const bodyContent = document.createElement('div');
-      bodyContent.className = 'accordion-body-content';
-      bodyContent.innerHTML = item.body; // body is richtext HTML
-      bodyDiv.appendChild(bodyContent);
-    }
+    const body = document.createElement('div');
+    body.className = 'accordion-body';
+    body.innerHTML = item.body || '';
 
     if (item.link) {
-      const link = document.createElement('a');
-      link.className = 'accordion-cta';
-      link.href = item.link;
-      link.textContent = item.linkText || item.link;
-      bodyDiv.appendChild(link);
+      const cta = document.createElement('a');
+      cta.className = 'accordion-cta';
+      cta.href = item.link;
+      cta.textContent = item.linkText || item.link;
+      body.appendChild(cta);
     }
 
-    accordionItem.appendChild(headerBtn);
-    accordionItem.appendChild(bodyDiv);
-    left.appendChild(accordionItem);
+    acc.append(header, body);
+    left.appendChild(acc);
 
-    // click handler
-    headerBtn.addEventListener('click', () => {
-      // remove active from others
-      left.querySelectorAll('.accordion-item').forEach((el) => el.classList.remove('active'));
-      accordionItem.classList.add('active');
-      updateRightImage(right, item);
+    const imgSrc = resolveImage(item);
+
+    // initial image
+    if (index === 0 && imgSrc) {
+      image.src = imgSrc;
+      image.alt = item.imageAlt || '';
+      console.log('[AIM5050] initial image:', imgSrc);
+    }
+
+    header.addEventListener('click', () => {
+      console.log(`[AIM5050] clicked item[${index}]`);
+
+      left.querySelectorAll('.accordion-item')
+        .forEach((el) => el.classList.remove('active'));
+
+      acc.classList.add('active');
+
+      if (imgSrc) {
+        image.src = imgSrc;
+        image.alt = item.imageAlt || '';
+        console.log('[AIM5050] image switched to:', imgSrc);
+      }
     });
+  });
 
+  console.log('[AIM5050] decorate() completed');
+}
