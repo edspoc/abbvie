@@ -1,62 +1,111 @@
 // blocks/accordion-image-50-50/accordion-image-50-50.js
-import { getAemContentPath } from '../../scripts/aem.js'; // ✅ this exists in EDS starter
 
+/**
+ * Extracts the AEM content path from the data-aue-resource attribute.
+ * Example:
+ *   urn:aemconnection:/content/abbvie/index/jcr:content/...  ->  /content/abbvie/index/jcr:content/...
+ */
+function getAemContentPathFromBlock(block) {
+  const resourceEl = block.closest('[data-aue-resource]');
+  if (!resourceEl) {
+    console.warn('[accordion-image-50-50] No data-aue-resource attribute found');
+    return null;
+  }
+
+  const urn = resourceEl.getAttribute('data-aue-resource') || '';
+  const parts = urn.split(':');
+  const path = parts[parts.length - 1]; // take everything after last colon
+  console.log('[accordion-image-50-50] aem content path:', path);
+  return path;
+}
+
+/**
+ * Tries to find the "items" array in the model.json response.
+ * This is defensive so it works even if the JSON structure is slightly different.
+ */
+function extractItemsFromModel(modelJson) {
+  if (!modelJson || typeof modelJson !== 'object') {
+    console.warn('[accordion-image-50-50] modelJson is not an object', modelJson);
+    return [];
+  }
+
+  // direct items on root
+  if (Array.isArray(modelJson.items)) {
+    return modelJson.items;
+  }
+
+  // items under data -> <component-id> -> items
+  if (modelJson.data && typeof modelJson.data === 'object') {
+    const data = modelJson.data;
+    const keys = Object.keys(data);
+    for (const key of keys) {
+      if (Array.isArray(data[key]?.items)) {
+        return data[key].items;
+      }
+    }
+  }
+
+  console.warn('[accordion-image-50-50] could not find items array in model.json', modelJson);
+  return [];
+}
+
+/**
+ * Updates the image on the right side when an accordion item is active.
+ */
+function updateRightImage(rightContainer, item) {
+  const imgEl = rightContainer.querySelector('img.accordion-image');
+  if (!imgEl) return;
+
+  const imagePath =
+    (Array.isArray(item.image) && item.image[0]?.path) ||
+    (Array.isArray(item.image) && item.image[0]) ||
+    item.image ||
+    '';
+
+  imgEl.src = imagePath || '';
+  imgEl.alt = item.imageAlt || '';
+}
+
+/**
+ * Main decorate function called by Franklin.
+ */
 export default async function decorate(block) {
-  console.log('[accordion-image-50-50] decorate() start');
+  console.log('[accordion-image-50-50] decorate start');
 
-  // 1) Find the AEM resource URN from the wrapper
-  const wrapper = block.closest('[data-aue-resource]');
-  if (!wrapper) {
-    console.warn('[accordion-image-50-50] no data-aue-resource found');
+  // 1. Fetch model.json
+  const contentPath = getAemContentPathFromBlock(block);
+  if (!contentPath) {
     return;
   }
 
-  const urn = wrapper.dataset.aueResource;
-  console.log('[accordion-image-50-50] data-aue-resource =', urn);
-
-  // 2) Turn URN into AEM content path
-  const path = getAemContentPath(urn);
-  console.log('[accordion-image-50-50] AEM path =', path);
-
-  const modelUrl = `${path}.model.json`;
-  console.log('[accordion-image-50-50] model URL =', modelUrl);
-
-  // 3) Fetch model.json
-  let model;
+  let modelJson;
   try {
-    const res = await fetch(modelUrl);
-    console.log('[accordion-image-50-50] model fetch status =', res.status);
-
-    if (!res.ok) {
-      console.error('[accordion-image-50-50] model fetch failed', res.status, res.statusText);
+    const resp = await fetch(`${contentPath}.model.json`);
+    if (!resp.ok) {
+      console.error('[accordion-image-50-50] failed to fetch model.json', resp.status);
       return;
     }
-    model = await res.json();
+    modelJson = await resp.json();
   } catch (e) {
-    console.error('[accordion-image-50-50] model fetch error', e);
+    console.error('[accordion-image-50-50] error fetching model.json', e);
     return;
   }
 
-  console.log('[accordion-image-50-50] raw model.json =', model);
+  console.log('[accordion-image-50-50] model.json:', modelJson);
 
-  // Depending on how xwalk maps it, items may be under fields/items or directly items
-  const items =
-    model?.items ||
-    model?.fields?.items ||
-    model?.accordionItems ||
-    [];
-
-  console.log('[accordion-image-50-50] resolved items =', items);
+  const items = extractItemsFromModel(modelJson);
+  console.log('[accordion-image-50-50] extracted items:', items);
 
   if (!items.length) {
-    console.warn('[accordion-image-50-50] no items in model – check model.json');
+    // nothing to render
+    return;
   }
 
-  // 4) Build DOM
+  // 2. Clear block and build 50/50 layout
   block.innerHTML = '';
 
-  const root = document.createElement('div');
-  root.className = 'accordion-image-50-50';
+  const wrapper = document.createElement('div');
+  wrapper.className = 'accordion-image-50-50';
 
   const left = document.createElement('div');
   left.className = 'accordion-left';
@@ -68,16 +117,17 @@ export default async function decorate(block) {
   img.className = 'accordion-image';
   right.appendChild(img);
 
-  root.append(left, right);
-  block.append(root);
+  wrapper.appendChild(left);
+  wrapper.appendChild(right);
+  block.appendChild(wrapper);
 
-  // 5) Create accordion items from model
+  // 3. Build accordion items
   items.forEach((item, index) => {
-    console.log(`[accordion-image-50-50] building item[${index}] =`, item);
-
-    const accItem = document.createElement('div');
-    accItem.className = 'accordion-item';
-    if (index === 0) accItem.classList.add('active');
+    const accordionItem = document.createElement('div');
+    accordionItem.className = 'accordion-item';
+    if (index === 0) {
+      accordionItem.classList.add('active');
+    }
 
     const headerBtn = document.createElement('button');
     headerBtn.type = 'button';
@@ -91,54 +141,36 @@ export default async function decorate(block) {
     iconSpan.className = 'accordion-icon';
     iconSpan.textContent = '▾';
 
-    headerBtn.append(titleSpan, iconSpan);
+    headerBtn.appendChild(titleSpan);
+    headerBtn.appendChild(iconSpan);
 
-    const body = document.createElement('div');
-    body.className = 'accordion-body';
+    const bodyDiv = document.createElement('div');
+    bodyDiv.className = 'accordion-body';
 
     if (item.body) {
-      // body is richtext HTML from the model
-      body.innerHTML = item.body;
+      const bodyContent = document.createElement('div');
+      bodyContent.className = 'accordion-body-content';
+      bodyContent.innerHTML = item.body; // body is richtext HTML
+      bodyDiv.appendChild(bodyContent);
     }
 
-    if (item.link && item.linkText) {
-      const cta = document.createElement('a');
-      cta.href = item.link;
-      cta.textContent = item.linkText;
-      cta.className = 'accordion-cta';
-      body.appendChild(cta);
+    if (item.link) {
+      const link = document.createElement('a');
+      link.className = 'accordion-cta';
+      link.href = item.link;
+      link.textContent = item.linkText || item.link;
+      bodyDiv.appendChild(link);
     }
 
-    accItem.append(headerBtn, body);
-    left.appendChild(accItem);
+    accordionItem.appendChild(headerBtn);
+    accordionItem.appendChild(bodyDiv);
+    left.appendChild(accordionItem);
 
     // click handler
     headerBtn.addEventListener('click', () => {
-      console.log(`[accordion-image-50-50] clicked item[${index}]`);
-
-      // deactivate all
-      left.querySelectorAll('.accordion-item').forEach((n) => {
-        n.classList.remove('active');
-      });
-
-      // activate this
-      accItem.classList.add('active');
-
-      // change image
-      if (item.image) {
-        img.src = item.image;
-        img.alt = item.imageAlt || '';
-        console.log('[accordion-image-50-50] image set to', item.image);
-      }
+      // remove active from others
+      left.querySelectorAll('.accordion-item').forEach((el) => el.classList.remove('active'));
+      accordionItem.classList.add('active');
+      updateRightImage(right, item);
     });
 
-    // Set initial image from first item
-    if (index === 0 && item.image) {
-      img.src = item.image;
-      img.alt = item.imageAlt || '';
-      console.log('[accordion-image-50-50] initial image =', item.image);
-    }
-  });
-
-  console.log('[accordion-image-50-50] decorate() done');
-}
