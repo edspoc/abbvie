@@ -5173,38 +5173,41 @@
     "id": "accordion-image-50-50",
     "fields": [
       {
-        "component": "container", "name": "items", "label": "Accordion items", "multi": true,
+        "component": "container",
+        "name": "items",
+        "label": "Accordion Items",
+        "multi": true,
         "fields": [
-          { "component": "text", "name": "title", "label": "Question / Brand label", "valueType": "string"},
+          {
+            "component": "text",
+            "name": "title",
+            "label": "Question / Brand Label"
+          },
           {
             "component": "richtext",
             "name": "body",
-            "label": "Answer / Description",
-            "valueType": "string"
+            "label": "Answer / Description"
           },
           {
             "component": "text",
             "name": "link",
-            "label": "CTA Link",
-            "valueType": "string"
+            "label": "CTA Link"
           },
           {
             "component": "text",
             "name": "linkText",
-            "label": "CTA Label",
-            "valueType": "string"
+            "label": "CTA Label"
           },
           {
             "component": "reference",
             "name": "image",
             "label": "Image",
-            "valueType": "string"
+            "accept": ["image/*"]
           },
           {
             "component": "text",
             "name": "imageAlt",
-            "label": "Image Alt Text",
-            "valueType": "string"
+            "label": "Image Alt Text"
           }
         ]
       }
