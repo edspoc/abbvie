@@ -16,7 +16,10 @@ export default async function decorate(block) {
   const raw = await res.json();
   console.log('[accordion-image] raw items:', raw);
 
-  const items = Object.values(raw || {});
+  const items = Object.entries(raw || {})
+    .filter(([key, val]) => key.startsWith('item') && val?.title)
+    .map(([_, val]) => val);
+
   if (!items.length) return;
 
   block.innerHTML = `
