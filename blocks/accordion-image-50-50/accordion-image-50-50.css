@@ -1,120 +1,71 @@
-/* Layout: 50% accordion | 50% image */
-.eds-acc-img {
+.accordion-image-50-50 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+/* LEFT */
+.accordion-left {
+  border-right: 1px solid #e0e0e0;
+  padding-right: 32px;
+}
+
+.accordion-item {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.accordion-header {
+  width: 100%;
+  padding: 18px 0;
+  background: none;
+  border: 0;
   display: flex;
-  align-items: stretch;
   justify-content: space-between;
-  gap: 2rem;
-}
-
-/* Left & right columns */
-.eds-acc-img__left,
-.eds-acc-img__right {
-  flex: 1 1 50%;
-}
-
-/* Make it stack on small screens */
-@media (max-width: 768px) {
-  .eds-acc-img {
-    flex-direction: column;
-  }
-}
-
-/* Right image styling */
-.eds-acc-img__figure {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.eds-acc-img__image {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 480px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-/* Accordion core styles */
-.eds-accordion {
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #e0e0e0;
-  background-color: #ffffff;
-}
-
-.eds-accordion__item + .eds-accordion__item {
-  border-top: 1px solid #e0e0e0;
-}
-
-.eds-accordion__header {
-  width: 100%;
-  text-align: left;
-  padding: 1rem 1.25rem;
-  border: none;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  font-size: 20px;
+  font-weight: 600;
   cursor: pointer;
-  font: 600 1rem/1.4 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.eds-accordion__item.is-active .eds-accordion__header {
-  background: #f4f4f4;
+.accordion-item.active .accordion-header {
+  color: #0f62fe;
 }
 
-/* Question text */
-.eds-accordion__title {
-  flex: 1 1 auto;
-  padding-right: 1rem;
+.accordion-body {
+  display: none;
+  padding-bottom: 24px;
+  font-size: 16px;
+  color: #525252;
 }
 
-/* Plus / minus icon on the right */
-.eds-accordion__icon {
-  flex: 0 0 auto;
-  font-weight: 700;
-  font-size: 1.25rem;
-  line-height: 1;
-  transition: transform 0.15s ease;
+.accordion-item.active .accordion-body {
+  display: block;
 }
 
-/* Rotate / change when active */
-.eds-accordion__item.is-active .eds-accordion__icon {
-  transform: rotate(45deg); /* + → x style */
-}
-
-/* Panel (answer) */
-.eds-accordion__panel {
-  padding: 0 1.25rem 1rem;
-  font: 400 0.95rem/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-.eds-accordion__body p {
-  margin: 0 0 0.5rem;
-}
-
-.eds-accordion__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-top: 0.25rem;
+.accordion-link {
+  display: inline-block;
+  margin-top: 8px;
+  color: #0f62fe;
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.95rem;
-  color: #0f62fe; /* adjust to your primary */
 }
 
-.eds-accordion__link:hover {
-  text-decoration: underline;
+/* RIGHT */
+.accordion-image {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
 }
 
-/* Simple focus style */
-.eds-accordion__header:focus-visible {
-  outline: 2px solid #0f62fe;
-  outline-offset: 2px;
+/* MOBILE */
+@media (max-width: 900px) {
+  .accordion-image-50-50 {
+    grid-template-columns: 1fr;
+  }
+
+  .accordion-left {
+    border-right: none;
+    padding-right: 0;
+  }
 }

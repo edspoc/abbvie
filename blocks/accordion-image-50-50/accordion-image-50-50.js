@@ -1,12 +1,10 @@
 export default function decorate(block) {
-  // STEP 1: read raw rows FIRST
+  // IMPORTANT: do NOT clear block yet
   const rows = Array.from(block.children);
 
-  if (!rows.length) {
-    return;
-  }
+  if (!rows.length) return;
 
-  // STEP 2: create layout
+  // build wrapper
   const wrapper = document.createElement('div');
   wrapper.className = 'accordion-image-50-50';
 
@@ -20,30 +18,31 @@ export default function decorate(block) {
   img.className = 'accordion-image';
   right.appendChild(img);
 
-  // STEP 3: build accordion from DOM rows
   rows.forEach((row, index) => {
     const cols = Array.from(row.children);
 
-    // ⬇️ THIS ORDER MUST MATCH YOUR MODEL FIELDS
     const title = cols[0]?.textContent?.trim();
     const body = cols[1]?.innerHTML;
     const link = cols[2]?.textContent?.trim();
     const linkText = cols[3]?.textContent?.trim();
     const image = cols[4]?.querySelector('img')?.src;
-    const imageAlt = cols[5]?.textContent?.trim() || '';
+    const alt = cols[5]?.textContent?.trim() || '';
 
     const item = document.createElement('div');
     item.className = 'accordion-item';
 
     item.innerHTML = `
-      <button class="accordion-header">${title || ''}</button>
+      <button class="accordion-header">
+        <span class="accordion-title">${title}</span>
+        <span class="accordion-icon">▾</span>
+      </button>
       <div class="accordion-body">
         ${body || ''}
         ${
           link
-            ? `<a class="accordion-cta" href="${link}">
-                 ${linkText || 'Learn more'}
-               </a>`
+            ? `<a class="accordion-link" href="${link}">
+                ${linkText || 'Learn more'} →
+              </a>`
             : ''
         }
       </div>
@@ -57,21 +56,21 @@ export default function decorate(block) {
 
       if (image) {
         img.src = image;
-        img.alt = imageAlt;
+        img.alt = alt;
       }
     });
 
-    // Default open first
+    // default open
     if (index === 0 && image) {
       item.classList.add('active');
       img.src = image;
-      img.alt = imageAlt;
+      img.alt = alt;
     }
 
     left.appendChild(item);
   });
 
-  // STEP 4: replace block content
+  // NOW clear block (after reading rows)
   block.innerHTML = '';
   wrapper.append(left, right);
   block.append(wrapper);
