@@ -1,39 +1,24 @@
 export default async function decorate(block) {
   const wrapper = block.closest('[data-aue-resource]');
-  if (!wrapper) {
-    console.error('[accordion-image] No data-aue-resource found');
-    return;
-  }
+  if (!wrapper) return;
 
   const resourcePath = wrapper.dataset.aueResource.replace('urn:aemconnection:', '');
-  console.log('[accordion-image] resourcePath:', resourcePath);
-
-  // ✅ ONLY endpoint that matters
   const itemsUrl = `${resourcePath}/items.1.json`;
+
   console.log('[accordion-image] fetching:', itemsUrl);
 
-  let raw;
-  try {
-    const res = await fetch(itemsUrl);
-    if (!res.ok) {
-      console.error('[accordion-image] failed to load items.', res.status);
-      return;
-    }
-    raw = await res.json();
-  } catch (e) {
-    console.error('[accordion-image] fetch error', e);
+  const res = await fetch(itemsUrl);
+  if (!res.ok) {
+    console.error('[accordion-image] failed to load items', res.status);
     return;
   }
 
-  console.log('[accordion-image] raw items json:', raw);
+  const raw = await res.json();
+  console.log('[accordion-image] raw items:', raw);
 
   const items = Object.values(raw || {});
-  if (!items.length) {
-    console.warn('[accordion-image] No accordion items found');
-    return;
-  }
+  if (!items.length) return;
 
-  // Build markup
   block.innerHTML = `
     <div class="accordion-image-50-50">
       <div class="accordion-left"></div>
@@ -67,7 +52,7 @@ export default async function decorate(block) {
 
     el.querySelector('.accordion-header').addEventListener('click', () => {
       block.querySelectorAll('.accordion-item')
-        .forEach(a => a.classList.remove('active'));
+        .forEach(i => i.classList.remove('active'));
 
       el.classList.add('active');
 
