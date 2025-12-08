@@ -5175,13 +5175,12 @@
       {
         "component": "container", "name": "items", "label": "Accordion items", "multi": true,
         "fields": [
-          { "component": "text", "name": "title", "label": "Question / Brand label", "valueType": "string", "required": true},
+          { "component": "text", "name": "title", "label": "Question / Brand label", "valueType": "string"},
           {
             "component": "richtext",
             "name": "body",
             "label": "Answer / Description",
-            "valueType": "string",
-            "required": true
+            "valueType": "string"
           },
           {
             "component": "text",

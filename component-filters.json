@@ -104,5 +104,22 @@
     "components": [
       "text"
     ]
+  },
+  {
+    "id": "accordion-image-50-50",
+    "filters": [
+      {
+        "id": "items",
+        "type": "array",
+        "properties": [
+          "title",
+          "body",
+          "link",
+          "linkText",
+          "image",
+          "imageAlt"
+        ]
+      }
+    ]
   }
 ]
