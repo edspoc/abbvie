@@ -1,191 +1,155 @@
 // blocks/accordion-image/accordion-image.js
 
-/**
- * Fetch model JSON for this block using data-aue-resource
- */
-async function fetchModel(block) {
-  const urn = block.dataset.aueResource;
-
-  console.log('[accordion-image] data-aue-resource:', urn);
-
-  if (!urn) {
-    console.warn('[accordion-image] No data-aue-resource on block. Cannot fetch model.');
-    return null;
-  }
-
-  // urn:aemconnection:/content/abbvie/index/jcr:content/root/section_.../accordion_image
-  const basePath = urn.replace('urn:aemconnection:', '');
-  console.log('[accordion-image] basePath:', basePath);
-
-  const candidates = [
-    `${basePath}.model.json`,
-    `${basePath}.json`,
-  ];
-
-  for (const url of candidates) {
-    try {
-      console.log('[accordion-image] Trying to fetch:', url);
-      const resp = await fetch(url);
-      console.log('[accordion-image] Response status for', url, ':', resp.status);
-
-      if (resp.ok) {
-        const data = await resp.json();
-        console.log('[accordion-image] Model data from', url, ':', data);
-        return data;
-      }
-    } catch (e) {
-      console.error('[accordion-image] Error fetching', url, e);
-    }
-  }
-
-  console.warn('[accordion-image] No usable model JSON found for block.');
-  return null;
-}
-
-/**
- * Build one accordion item DOM node
- */
-function createAccordionItem(item, index, onActivate, isActive) {
-  console.log('[accordion-image] Creating accordion item', index, ':', item);
-
-  const wrapper = document.createElement('div');
-  wrapper.classList.add('accordion-item');
-  if (isActive) {
-    wrapper.classList.add('active');
-  }
-
-  const headerBtn = document.createElement('button');
-  headerBtn.classList.add('accordion-header');
-  headerBtn.setAttribute('type', 'button');
-
-  const titleSpan = document.createElement('span');
-  titleSpan.classList.add('accordion-title');
-  titleSpan.textContent = item.title || '';
-
-  const iconSpan = document.createElement('span');
-  iconSpan.classList.add('accordion-icon');
-  iconSpan.textContent = '▾';
-
-  headerBtn.appendChild(titleSpan);
-  headerBtn.appendChild(iconSpan);
-
-  const bodyDiv = document.createElement('div');
-  bodyDiv.classList.add('accordion-body');
-
-  // body is richtext string
-  if (item.body) {
-    const bodyContent = document.createElement('div');
-    bodyContent.classList.add('accordion-body-text');
-    bodyContent.innerHTML = item.body; // comes from your richtext field
-    bodyDiv.appendChild(bodyContent);
-  }
-
-  // CTA (optional)
-  if (item.link && item.linkText) {
-    const cta = document.createElement('a');
-    cta.classList.add('accordion-cta');
-    cta.href = item.link;
-    cta.textContent = item.linkText;
-    bodyDiv.appendChild(cta);
-  }
-
-  headerBtn.addEventListener('click', () => {
-    console.log('[accordion-image] Header clicked for index:', index);
-    onActivate(index);
-  });
-
-  wrapper.appendChild(headerBtn);
-  wrapper.appendChild(bodyDiv);
-
-  return wrapper;
-}
-
-/**
- * Activate an accordion item and update the right side image
- */
-function activateItem(itemsEls, itemsData, index, imgEl) {
-  console.log('[accordion-image] Activating item index:', index);
-
-  itemsEls.forEach((el, i) => {
-    if (i === index) {
-      el.classList.add('active');
-    } else {
-      el.classList.remove('active');
-    }
-  });
-
-  const item = itemsData[index];
-  if (!item) {
-    console.warn('[accordion-image] No item data found at index:', index);
-    return;
-  }
-
-  if (imgEl) {
-    console.log('[accordion-image] Updating image for index:', index, 'src:', item.image);
-    imgEl.src = item.image || '';
-    imgEl.alt = item.imageAlt || item.title || '';
-  }
-}
-
-/**
- * Main decorate function
- */
 export default async function decorate(block) {
-  console.log('[accordion-image] decorate() called for block:', block);
+  console.log('[accordion-image] decorate start');
 
-  const model = await fetchModel(block);
+  // 1) Read AEM/EDS resource path from data-aue-resource
+  const urn = block.dataset.aueResource
+    || block.closest('[data-aue-resource]')?.dataset.aueResource;
 
-  if (!model) {
-    console.warn('[accordion-image] No model found, leaving default markup.');
+  console.log('[accordion-image] urn from data-aue-resource:', urn);
+
+  const prefix = 'urn:aemconnection:';
+  if (!urn || !urn.startsWith(prefix)) {
+    console.warn('[accordion-image] No valid urn:aemconnection found');
     return;
   }
 
-  console.log('[accordion-image] Raw model object:', model);
+  const contentPath = urn.substring(prefix.length); // /content/..../accordion_image
+  const jsonUrl = `${contentPath}.json`;
 
-  // Most likely your data shape is { items: [...] }
-  const items = model.items || model.fields || model.data || [];
-  console.log('[accordion-image] Parsed items array:', items);
+  console.log('[accordion-image] contentPath:', contentPath);
+  console.log('[accordion-image] jsonUrl:', jsonUrl);
+
+  // 2) Fetch JSON for this component
+  let json;
+  try {
+    const resp = await fetch(jsonUrl);
+    if (!resp.ok) {
+      console.error('[accordion-image] Failed to fetch JSON', resp.status, resp.statusText);
+      return;
+    }
+    json = await resp.json();
+  } catch (e) {
+    console.error('[accordion-image] Error fetching JSON', e);
+    return;
+  }
+
+  console.log('[accordion-image] raw JSON:', json);
+
+  // 3) Get items array from JSON
+  // In most EDS setups you’ll either get { items: [...] } or just [...]
+  const items = Array.isArray(json)
+    ? json
+    : (json.items || json.data || []);
+
+  console.log('[accordion-image] items parsed:', items);
 
   if (!Array.isArray(items) || items.length === 0) {
-    console.warn('[accordion-image] No items in model.');
+    console.warn('[accordion-image] No items found in JSON');
     return;
   }
 
-  // Clear whatever HTML is currently inside the block
+  // 4) Clear authoring placeholder markup
   block.innerHTML = '';
 
-  // Outer 50-50 wrapper
-  const outer = document.createElement('div');
-  outer.classList.add('accordion-image-50-50');
+  // 5) Build base layout (50/50)
+  const wrapper = document.createElement('div');
+  wrapper.className = 'accordion-image-50-50';
 
   const left = document.createElement('div');
-  left.classList.add('accordion-left');
+  left.className = 'accordion-left';
 
   const right = document.createElement('div');
-  right.classList.add('accordion-right');
+  right.className = 'accordion-right';
 
-  const imageEl = document.createElement('img');
-  imageEl.classList.add('accordion-image');
+  const img = document.createElement('img');
+  img.className = 'accordion-image';
+  right.appendChild(img);
 
-  right.appendChild(imageEl);
+  wrapper.append(left, right);
+  block.append(wrapper);
 
-  const itemEls = [];
-
-  const onActivate = (idx) => activateItem(itemEls, items, idx, imageEl);
-
+  // 6) Build accordion items
   items.forEach((item, index) => {
-    const isActive = index === 0;
-    const itemEl = createAccordionItem(item, index, onActivate, isActive);
-    itemEls.push(itemEl);
+    console.log('[accordion-image] building item', index, item);
+
+    const {
+      title = '',
+      body = '',
+      link,
+      linkText,
+      image,
+      imageAlt = '',
+    } = item;
+
+    const itemEl = document.createElement('div');
+    itemEl.className = 'accordion-item';
+    if (index === 0) itemEl.classList.add('active');
+
+    const headerBtn = document.createElement('button');
+    headerBtn.type = 'button';
+    headerBtn.className = 'accordion-header';
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'accordion-title';
+    titleSpan.textContent = title || '';
+
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'accordion-icon';
+    iconSpan.textContent = '▾';
+
+    headerBtn.append(titleSpan, iconSpan);
+
+    const bodyEl = document.createElement('div');
+    bodyEl.className = 'accordion-body';
+
+    if (body) {
+      const bodyText = document.createElement('div');
+      bodyText.className = 'accordion-body-text';
+      bodyText.innerHTML = body; // body is already HTML from model
+      bodyEl.appendChild(bodyText);
+    }
+
+    if (link && linkText) {
+      const cta = document.createElement('a');
+      cta.className = 'accordion-cta';
+      cta.href = link;
+      cta.textContent = linkText;
+      bodyEl.appendChild(cta);
+    }
+
+    itemEl.append(headerBtn, bodyEl);
     left.appendChild(itemEl);
+
+    // click handler
+    headerBtn.addEventListener('click', () => {
+      console.log('[accordion-image] header clicked', index);
+
+      // deactivate all
+      left.querySelectorAll('.accordion-item').forEach((el) => {
+        el.classList.remove('active');
+      });
+
+      // activate this one
+      itemEl.classList.add('active');
+
+      // update image
+      if (image) {
+        img.src = image;
+        img.alt = imageAlt || title || '';
+      } else {
+        img.removeAttribute('src');
+        img.alt = '';
+      }
+    });
+
+    // set initial image from first item
+    if (index === 0 && image) {
+      img.src = image;
+      img.alt = imageAlt || title || '';
+    }
   });
 
-  outer.appendChild(left);
-  outer.appendChild(right);
-  block.appendChild(outer);
-
-  // Activate first item by default
-  onActivate(0);
-
-  console.log('[accordion-image] Decoration completed.');
+  console.log('[accordion-image] decorate end');
 }
