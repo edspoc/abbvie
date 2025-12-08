@@ -1,17 +1,23 @@
 .accordion-image-50-50 {
   display: flex;
   width: 100%;
-  border: 1px solid #d0e2ff;
+  gap: 32px;
 }
 
 /* LEFT */
 .accordion-left {
   width: 50%;
-  border-right: 1px solid #d0e2ff;
 }
 
 .accordion-item {
   border-bottom: 1px solid #e5e5e5;
+}
+
+.accordion-item button {
+  font-size: 20px !important;
+  background-color: unset;
+  color: #000;
+  font-weight: 100;
 }
 
 .accordion-header {
@@ -26,7 +32,7 @@
 }
 
 .accordion-item.active .accordion-header {
-  outline: 2px solid #0f62fe;
+
 }
 
 /* body */
