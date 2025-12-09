@@ -29,13 +29,20 @@
       "twocoloumtext",
       "threecoloumfooter",
       "promotional-banner",
-      "accordion-image"
+      "accordion-image",
+      "accordion-image-v2"
     ]
   },
   {
     "id": "cards",
     "components": [
       "card"
+    ]
+  },
+  {
+    "id": "accordion-image-v2",
+    "components": [
+      "accordion-image-item"
     ]
   },
   {

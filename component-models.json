@@ -186,6 +186,47 @@
     ]
   },
   {
+    "id": "accordion-image-item",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Question / Brand label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "body",
+        "label": "Answer / Description",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "link",
+        "label": "CTA Link",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "CTA Label",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "columns",
     "fields": [
       {
@@ -5222,6 +5263,7 @@
       }
     ]
   },
+
   {
     "id": "promo-text",
     "fields": [
