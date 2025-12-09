@@ -18,9 +18,9 @@
 
 /* LEFT COLUMN = accordion list */
 .accordion-block-with-image > ul > li {
+padding-left: 15px;
   grid-column: 1;
   border-top: 1px solid #e0e0e0;
-  padding: 20px 0;
 }
 
 .accordion-block-with-image > ul > li:last-child {
@@ -103,6 +103,26 @@
 
 .accordion-block-with-image .button-container {
   margin-top: 16px;
+}
+
+.accordion-block-with-image > ul > li.is-active{
+    border-left: 4px solid blue;
+}
+
+.accordion-block-with-image
+.accordion-body
+p[data-aue-prop="link"] {
+  color: #0f62fe;          /* IBM blue */
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 12px;
+  display: inline-block;
+}
+
+.accordion-block-with-image
+.accordion-body
+p[data-aue-prop="link"]::after {
+  content: " →";
 }
 
 /* ===== MOBILE ===== */
