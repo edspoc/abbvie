@@ -11,6 +11,8 @@
 
 .accordion-item {
   border-bottom: 1px solid #e5e5e5;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .accordion-item button {
@@ -54,7 +56,7 @@ border-left: 4px solid #0f62fe;
 .accordion-cta {
   color: #0f62fe; /* IBM Blue */
   font-weight: 600;
-  text-decoration: none;
+  text-decoration: none !important;
   display: inline-flex;
   align-items: center;
   gap: 6px;
