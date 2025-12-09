@@ -13,7 +13,7 @@
 .accordion-block-with-image > ul {
   display: grid;
   grid-template-columns: 50% 50%;
-  column-gap: 64px;
+  column-gap: 32px;
 }
 
 /* LEFT COLUMN = accordion list */
@@ -161,7 +161,10 @@ p[data-aue-prop="link"]::after {
 }
 
 .accordion-section h1{
-    font-family: "IBM Plex Sans", "Helvetica Neue" !important;
+    font-size: 50px;
+        font-family: "IBM Plex Sans", "Helvetica Neue" !important;
+        font-weight: 300;
+        padding-bottom: 1rem;
 }
 
 
