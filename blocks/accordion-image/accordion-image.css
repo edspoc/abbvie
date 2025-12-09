@@ -67,10 +67,6 @@ border-left: 4px solid #0f62fe;
   transition: transform 0.2s ease;
 }
 
-/* Optional: subtle hover motion */
-.accordion-cta:hover::after {
-  transform: translateX(3px);
-}
 
 
 /* RIGHT */
