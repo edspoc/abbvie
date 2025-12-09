@@ -144,10 +144,10 @@ p[data-aue-prop="link"]::after {
   position: absolute;
   right: 0;
   top: 50%;
-  width: 10px;
-  height: 10px;
-  border-right: 2px solid #161616;
-  border-bottom: 2px solid #161616;
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid #161616;
+  border-bottom: 1.5px solid #161616;
   transform: translateY(-50%) rotate(45deg);
   transition: transform 0.25s ease;
 }
@@ -158,6 +158,10 @@ p[data-aue-prop="link"]::after {
 > li.is-active
 > .accordion-body:first-child::after {
   transform: translateY(-50%) rotate(-135deg);
+}
+
+.accordion-section h1{
+    font-family: "IBM Plex Sans", "Helvetica Neue";
 }
 
 
