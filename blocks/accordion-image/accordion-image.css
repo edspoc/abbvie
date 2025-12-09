@@ -32,12 +32,12 @@
 }
 
 .accordion-item.active .accordion-header {
-
+border-left: 4px solid #0f62fe;
 }
 
 /* body */
 .accordion-body {
-  border-left: 4px solid #0f62fe;
+    padding-left: 20px;
   max-height: 0;
   overflow: hidden;
   transition: all 0.25s ease;
@@ -73,6 +73,7 @@ aspect-ratio: 1.3;
 }
 
 .accordion-icon {
+  margin-top: 8px;
   width: 16px;
   height: 16px;
   position: relative;
