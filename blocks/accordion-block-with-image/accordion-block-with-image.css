@@ -161,7 +161,7 @@ p[data-aue-prop="link"]::after {
 }
 
 .accordion-section h1{
-    font-family: "IBM Plex Sans", "Helvetica Neue";
+    font-family: "IBM Plex Sans", "Helvetica Neue" !important;
 }
 
 
