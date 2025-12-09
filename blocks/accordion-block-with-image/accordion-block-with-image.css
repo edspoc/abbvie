@@ -5,26 +5,29 @@
   padding: 0;
 }
 
-/* ===== MAIN 2-COLUMN LAYOUT ===== */
+/* ====== MAIN TWO-COLUMN LAYOUT ====== */
 .accordion-block-with-image > ul {
   display: grid;
-  grid-template-columns: 1fr 1.3fr;
+  grid-template-columns: minmax(300px, 1fr) minmax(420px, 1.3fr);
   gap: 64px;
   align-items: start;
 }
 
-/* ===== LEFT: ACCORDION LIST ===== */
+/* ====== ACCORDION LIST ====== */
 .accordion-block-with-image > ul > li {
   border-top: 1px solid #e0e0e0;
-  padding: 20px 0;
+  padding: 18px 0;
 }
 
 .accordion-block-with-image > ul > li:last-child {
   border-bottom: 1px solid #e0e0e0;
 }
 
-/* ===== TITLE (first accordion-body in each li) ===== */
-.accordion-block-with-image > ul > li > .accordion-body:first-child {
+/* ====== TITLE ROW ====== */
+.accordion-block-with-image
+> ul
+> li
+> .accordion-body:first-child {
   font-size: 20px;
   font-weight: 500;
   cursor: pointer;
@@ -43,37 +46,38 @@
   transition: transform 0.2s ease;
 }
 
-/* ===== HIDE ALL CONTENT BY DEFAULT ===== */
+/* Rotate arrow when active */
 .accordion-block-with-image
 > ul
-> li
-> .accordion-body:not(:first-child),
-.accordion-block-with-image
-> ul
-> li
-> .accordion-image {
-  display: none;
-}
-
-/* ===== OPEN FIRST ITEM BY DEFAULT ===== */
-.accordion-block-with-image
-> ul
-> li:first-child
-> .accordion-body:not(:first-child) {
-  display: block;
-}
-
-.accordion-block-with-image
-> ul
-> li:first-child
+> li.is-active
 > .accordion-body:first-child::after {
   transform: rotate(180deg);
 }
 
-/* ===== RIGHT IMAGE PANEL ===== */
+/* ====== HIDE ALL BODIES BY DEFAULT ====== */
 .accordion-block-with-image
 > ul
-> li:first-child
+> li
+> .accordion-body:not(:first-child) {
+  display: none;
+}
+
+/* ====== SHOW ACTIVE CONTENT ====== */
+.accordion-block-with-image
+> ul
+> li.is-active
+> .accordion-body:not(:first-child) {
+  display: block;
+}
+
+/* ====== IMAGE HANDLING ====== */
+.accordion-block-with-image .accordion-image {
+  display: none;
+}
+
+.accordion-block-with-image
+> ul
+> li.is-active
 > .accordion-image {
   display: block;
   grid-column: 2;
@@ -88,25 +92,21 @@
   display: block;
 }
 
-/* ===== DESCRIPTION TEXT ===== */
+/* ====== CONTENT SPACING ====== */
 .accordion-block-with-image
 > ul
-> li
+> li.is-active
 > .accordion-body p {
   margin: 12px 0;
   line-height: 1.5;
 }
 
-/* ===== CTA ===== */
+/* CTA */
 .accordion-block-with-image .button-container {
   margin-top: 16px;
 }
 
-.accordion-block-with-image .button-container .button {
-  padding-left: 0;
-}
-
-/* ===== MOBILE ===== */
+/* ====== MOBILE ====== */
 @media (max-width: 900px) {
   .accordion-block-with-image > ul {
     grid-template-columns: 1fr;
@@ -115,7 +115,7 @@
 
   .accordion-block-with-image
   > ul
-  > li:first-child
+  > li.is-active
   > .accordion-image {
     grid-column: auto;
     grid-row: auto;
