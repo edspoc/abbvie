@@ -116,7 +116,7 @@ export default async function decorate(block) {
 
     const iconSpan = document.createElement('span');
     iconSpan.classList.add('accordion-icon');
-    iconSpan.textContent = '▾';
+    iconSpan.textContent = '';
 
     header.appendChild(titleSpan);
     header.appendChild(iconSpan);
