@@ -77,8 +77,8 @@ aspect-ratio: 1.3;
 
 .accordion-icon {
   margin-top: 8px;
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 18px;
   position: relative;
   display: inline-block;
 }
@@ -116,3 +116,12 @@ aspect-ratio: 1.3;
   transform: rotate(45deg);
 }
 
+.accordion-section h1{
+    font-size: 60px;
+    font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 300;
+}
+
+.accordion-item button{
+    margin:0 !important;
+}
