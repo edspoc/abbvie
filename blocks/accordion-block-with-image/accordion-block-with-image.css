@@ -125,6 +125,42 @@ p[data-aue-prop="link"]::after {
   content: " →";
 }
 
+
+/* Accordion title container */
+.accordion-block-with-image
+> ul
+> li
+> .accordion-body:first-child {
+  position: relative;
+  padding-right: 24px; /* space for arrow */
+}
+
+/* Chevron (closed state - down) */
+.accordion-block-with-image
+> ul
+> li
+> .accordion-body:first-child::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid #161616;
+  border-bottom: 2px solid #161616;
+  transform: translateY(-50%) rotate(45deg);
+  transition: transform 0.25s ease;
+}
+
+/* Open state (rotate up) */
+.accordion-block-with-image
+> ul
+> li.is-active
+> .accordion-body:first-child::after {
+  transform: translateY(-50%) rotate(-135deg);
+}
+
+
 /* ===== MOBILE ===== */
 @media (max-width: 900px) {
   .accordion-block-with-image > ul {
