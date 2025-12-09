@@ -87,7 +87,7 @@ padding-left: 15px;
 /* Image scaling */
 .accordion-block-with-image .accordion-image picture,
 .accordion-block-with-image .accordion-image img {
-aspect-ration:1.333;
+aspect-ratio:1.333;
   width: 100%;
   height: auto;
   display: block;
