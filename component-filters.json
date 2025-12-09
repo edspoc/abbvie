@@ -17,7 +17,7 @@
       "columns",
       "fragment",
       "accordion-image",
-      "accordion-image-v2"
+      "accordion-block-with-image"
     ]
   },
   {
@@ -114,6 +114,12 @@
           "imageAlt"
         ]
       }
+    ]
+  },
+  {
+    "id": "accordion-block-with-image",
+    "components": [
+      "accordion-block-with-image-item"
     ]
   }
 ]

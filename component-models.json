@@ -5501,5 +5501,40 @@
         "valueType": "string"
       }
     ]
-  }
+  },
+  {
+  "id": "accordion-block-with-image-item",
+  "fields": [
+    {
+      "component": "text",
+      "name": "title",
+      "label": "Title"
+    },
+    {
+      "component": "richtext",
+      "name": "body",
+      "label": "Description"
+    },
+    {
+      "component": "reference",
+      "name": "image",
+      "label": "Image"
+    },
+    {
+      "component": "text",
+      "name": "imageAlt",
+      "label": "Image Alt"
+    },
+    {
+      "component": "text",
+      "name": "link",
+      "label": "CTA Link"
+    },
+    {
+      "component": "text",
+      "name": "linkText",
+      "label": "CTA Label"
+    }
+  ]
+}
 ]
