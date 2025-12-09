@@ -31,7 +31,7 @@
   cursor: pointer;
 }
 
-.accordion-item.active .accordion-header {
+.accordion-item.active {
 border-left: 4px solid #0f62fe;
 }
 
