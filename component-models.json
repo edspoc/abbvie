@@ -5527,13 +5527,13 @@
     },
     {
       "component": "text",
-      "name": "link",
-      "label": "CTA Link"
+      "name": "linkText",
+      "label": "CTA Label"
     },
     {
       "component": "text",
-      "name": "linkText",
-      "label": "CTA Label"
+      "name": "link",
+      "label": "CTA Link"
     }
   ]
 }
