@@ -56,6 +56,7 @@ border-left: 4px solid #0f62fe;
 .accordion-cta {
   color: #0f62fe; /* IBM Blue */
   font-weight: 600;
+  padding-bottom:48px;
   text-decoration: none !important;
   display: inline-flex;
   align-items: center;
